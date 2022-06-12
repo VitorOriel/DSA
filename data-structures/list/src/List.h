@@ -12,26 +12,68 @@ class List {
         ~List();
         void append(T item);
         void remove(T item);
-        void print();
+        class Iterator : public std::iterator<std::bidirectional_iterator_tag, T> {
+            public:
+                Iterator() noexcept : it_pCurrentNode(this->pHead) { }
+                Iterator(const Node<T>* pNode) noexcept : it_pCurrentNode(pNode) { }
+                Iterator& operator=(Node<T>* pNode) {
+                    this->it_pCurrentNode = pNode;
+                    return *this;
+                }
+                Iterator& operator++() {
+                    if (this->it_pCurrentNode)
+                        it_pCurrentNode = it_pCurrentNode->pNext;
+                    return *this;
+                }
+                Iterator operator++(int) {
+                    Iterator iterator = *this;
+                    ++*this;
+                    return iterator;
+                }
+                Iterator& operator--() {
+                    if (this->it_pCurrentNode)
+                        it_pCurrentNode = it_pCurrentNode->pPrevious;
+                    return *this;
+                }
+                Iterator operator--(int) {
+                    Iterator iterator = *this;
+                    --*this;
+                    return iterator;
+                }
+                bool operator==(const Iterator& iterator) {
+                    return this->it_pCurrentNode == iterator.it_pCurrentNode;
+                }
+                bool operator!=(const Iterator& iterator) {
+                    return this->it_pCurrentNode != iterator.it_pCurrentNode;
+                }
+                T operator*() {
+                    return this->it_pCurrentNode->data;
+                }
+            private:
+                const Node<T>* it_pCurrentNode;
+        };
+        Iterator begin() { return Iterator(this->pHead); }
+        Iterator rbegin() { return Iterator(this->pTail); }
+        Iterator end() { return Iterator(nullptr); }
     private:
-        Node<T>* head;
-        Node<T>* tail;
+        Node<T>* pHead;
+        Node<T>* pTail;
         size_t size;
 };
 
 template<typename T>
 List<T>::List() {
-    this->head = nullptr;
-    this->tail = nullptr;
+    this->pHead = nullptr;
+    this->pTail = nullptr;
     this->size = 0;
 }
 
 template<typename T>
 List<T>::~List() {
-    Node<T>* thisNode = this->head;
-    while (thisNode != nullptr) {
-        Node<T>* nodeAux = thisNode;
-        thisNode = thisNode->next;
+    Node<T>* crawlNode = this->pHead;
+    while (crawlNode != nullptr) {
+        Node<T>* nodeAux = crawlNode;
+        crawlNode = crawlNode->pNext;
         delete nodeAux;
     }
 }
@@ -39,22 +81,37 @@ List<T>::~List() {
 template<typename T>
 void List<T>::append(T item) {
     Node<T>* newNode = new Node<T>(item);
-    if (this->head == nullptr)
-        this->head = newNode;
-    else
-        this->tail->next = newNode;
-    this->tail = newNode;
+    if (this->pHead == nullptr)
+        this->pHead = newNode;
+    else {
+        newNode->pPrevious = this->pTail;
+        this->pTail->pNext = newNode;
+    }
+    this->pTail = newNode;
     this->size += 1;
 }
 
 template<typename T>
-void List<T>::print() {
-    Node<T>* thisNode = this->head;
-    while (thisNode != nullptr) {
-        cout << to_string(thisNode->content) << ' ';
-        thisNode = thisNode->next;
+void List<T>::remove(T item) {
+    Node<T>* foundNode = nullptr;
+    Node<T>* crawlNode = this->pHead;
+    while (foundNode == nullptr && crawlNode != nullptr) {
+        if (item == crawlNode->data)
+            foundNode = crawlNode;
+        crawlNode = crawlNode->pNext;
     }
-    cout << endl;
+    if (foundNode != nullptr) {
+        if (foundNode == this->pHead)
+            this->pHead = this->pHead->pNext;
+        if (foundNode == this->pTail)
+            this->pTail = this->pTail->pPrevious;
+        if (foundNode->pNext != nullptr)
+            foundNode->pNext->pPrevious = foundNode->pPrevious;
+        if (foundNode->pPrevious != nullptr)
+            foundNode->pPrevious->pNext = foundNode->pNext;
+        delete foundNode;
+        this->size -= 1;
+    }
 }
 
 #endif

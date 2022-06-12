@@ -1,8 +1,6 @@
 #ifndef NODE_H
 #define NODE_H
 
-#include <iostream>
-
 template<typename T>
 class Node {
     template<typename U>
@@ -12,22 +10,22 @@ class Node {
         Node(T item);
         ~Node();
     protected:
-        T content;
-        Node* previous;
-        Node* next;
+        T data;
+        Node* pPrevious;
+        Node* pNext;
 };
 
 template<typename T>
 Node<T>::Node(T item) {
-    this->previous = nullptr;
-    this->next = nullptr;
-    this->content = item;
+    this->pPrevious = nullptr;
+    this->pNext = nullptr;
+    this->data = item;
 }
 
 template<typename T>
 Node<T>::~Node() {
-    this->previous = nullptr;
-    this->next = nullptr;
+    this->pPrevious = nullptr;
+    this->pNext = nullptr;
 }
 
 #endif
