@@ -3,7 +3,6 @@
 
 #include <iostream>
 #include "Node.h"
-using namespace std;
 
 template<typename T>
 class List {
@@ -12,6 +11,8 @@ class List {
         ~List();
         void append(T item);
         void remove(T item);
+        T& operator[](size_t index);
+        T operator[](size_t index) const { return *this[index]; }
         class Iterator : public std::iterator<std::bidirectional_iterator_tag, T> {
             public:
                 Iterator() noexcept : it_pCurrentNode(this->pHead) { }
@@ -52,9 +53,10 @@ class List {
             private:
                 const Node<T>* it_pCurrentNode;
         };
-        Iterator begin() { return Iterator(this->pHead); }
-        Iterator rbegin() { return Iterator(this->pTail); }
-        Iterator end() { return Iterator(nullptr); }
+        Iterator begin() noexcept { return Iterator(this->pHead); }
+        Iterator cbegin() const noexcept { return Iterator(this->pHead); }
+        Iterator rbegin() noexcept { return Iterator(this->pTail); }
+        Iterator end() noexcept { return Iterator(nullptr); }
     private:
         Node<T>* pHead;
         Node<T>* pTail;
@@ -112,6 +114,17 @@ void List<T>::remove(T item) {
         delete foundNode;
         this->size -= 1;
     }
+}
+
+template<typename T>
+T& List<T>::operator[](size_t index) {
+    Node<T>* crawlNode = this->pHead;
+    for (size_t i = 0; i < this->size; ++i) {
+        if (index == i)
+            return crawlNode->data;
+        crawlNode = crawlNode->pNext;
+    }
+    throw std::out_of_range("Index out of range");
 }
 
 #endif
