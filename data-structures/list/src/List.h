@@ -23,7 +23,7 @@ class List {
                 }
                 Iterator& operator++() {
                     if (this->it_pCurrentNode)
-                        it_pCurrentNode = it_pCurrentNode->pNext;
+                        this->it_pCurrentNode = this->it_pCurrentNode->pNext;
                     return *this;
                 }
                 Iterator operator++(int) {
@@ -33,7 +33,7 @@ class List {
                 }
                 Iterator& operator--() {
                     if (this->it_pCurrentNode)
-                        it_pCurrentNode = it_pCurrentNode->pPrevious;
+                        this->it_pCurrentNode = this->it_pCurrentNode->pPrevious;
                     return *this;
                 }
                 Iterator operator--(int) {
@@ -118,11 +118,13 @@ void List<T>::remove(T item) {
 
 template<typename T>
 T& List<T>::operator[](size_t index) {
-    Node<T>* crawlNode = this->pHead;
-    for (size_t i = 0; i < this->size; ++i) {
-        if (index == i)
-            return crawlNode->data;
-        crawlNode = crawlNode->pNext;
+    if (index < this->size) {
+        Node<T>* crawlNode = this->pHead;
+        for (size_t i = 0; i < this->size; ++i) {
+            if (index == i)
+                return crawlNode->data;
+            crawlNode = crawlNode->pNext;
+        }
     }
     throw std::out_of_range("Index out of range");
 }
