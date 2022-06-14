@@ -7,7 +7,7 @@
 template<typename T>
 class List {
     public:
-        List();
+        List() { this->_List(); }
         List(const List<T>& list);
         ~List();
         void append(T item);
@@ -59,13 +59,14 @@ class List {
         Iterator rbegin() noexcept { return Iterator(this->pTail); }
         Iterator end() noexcept { return Iterator(nullptr); }
     private:
+        void _List(); // Base args constructor
         Node<T>* pHead;
         Node<T>* pTail;
         size_t size;
 };
 
 template<typename T>
-List<T>::List() {
+void List<T>::_List() {
     this->pHead = nullptr;
     this->pTail = nullptr;
     this->size = 0;
@@ -73,9 +74,7 @@ List<T>::List() {
 
 template<typename T>
 List<T>::List(const List<T>& list) {
-    this->pHead = nullptr;
-    this->pTail = nullptr;
-    this->size = 0;
+    this->_List();
     Node<T>* crawlNode = list.pHead;
     while (crawlNode != nullptr) {
         this->append(crawlNode->data);
