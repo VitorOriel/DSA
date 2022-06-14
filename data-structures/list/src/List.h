@@ -8,6 +8,7 @@ template<typename T>
 class List {
     public:
         List();
+        List(const List<T>& list);
         ~List();
         void append(T item);
         void remove(T item);
@@ -17,8 +18,8 @@ class List {
             public:
                 Iterator() noexcept : it_pCurrentNode(this->pHead) { }
                 Iterator(const Node<T>* pNode) noexcept : it_pCurrentNode(pNode) { }
-                Iterator& operator=(Node<T>* pNode) {
-                    this->it_pCurrentNode = pNode;
+                Iterator& operator=(T item) {
+                    this->it_pCurrentNode->data = item;
                     return *this;
                 }
                 Iterator& operator++() {
@@ -68,6 +69,18 @@ List<T>::List() {
     this->pHead = nullptr;
     this->pTail = nullptr;
     this->size = 0;
+}
+
+template<typename T>
+List<T>::List(const List<T>& list) {
+    this->pHead = nullptr;
+    this->pTail = nullptr;
+    this->size = 0;
+    Node<T>* crawlNode = list.pHead;
+    while (crawlNode != nullptr) {
+        this->append(crawlNode->data);
+        crawlNode = crawlNode->pNext;
+    }
 }
 
 template<typename T>

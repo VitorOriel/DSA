@@ -16,8 +16,14 @@ int main() {
     list.append(10);
     list.append(20);
     list.append(30);
+    cout << "Printing list 1" << endl;
     printList(list);
-    list.remove(30);
+    List<int> list2 = List<int>(list);
+    list2.remove(30);
+    list[0] = 0;
+    cout << "Printing list 1" << endl;
     printList(list);
+    cout << "Printing list 2" << endl;
+    printList(list2);
     return 0;
 }
