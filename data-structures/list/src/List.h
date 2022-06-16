@@ -1,14 +1,14 @@
 #ifndef LIST_H
 #define LIST_H
 
-#include <iostream>
+#include <cstddef>
 #include "Node.h"
 
 template<typename T>
 class List {
     public:
         List() { this->_List(); }
-        List(const List<T>& list);
+        List(const List<T>& other);
         ~List();
         void append(T item);
         void remove(T item);
@@ -73,9 +73,9 @@ void List<T>::_List() {
 }
 
 template<typename T>
-List<T>::List(const List<T>& list) {
+List<T>::List(const List<T>& other) {
     this->_List();
-    Node<T>* crawlNode = list.pHead;
+    Node<T>* crawlNode = other.pHead;
     while (crawlNode != nullptr) {
         this->append(crawlNode->data);
         crawlNode = crawlNode->pNext;
