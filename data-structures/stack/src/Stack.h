@@ -10,6 +10,7 @@ class Stack {
     public:
         Stack() { this->_Stack(); };
         Stack(const Stack<T>& other);
+        ~Stack() { while(!this->isEmpty()) this->pop(); }
         void push(T item);
         T pop();
         inline bool isEmpty() { return this->pTop == nullptr; }
