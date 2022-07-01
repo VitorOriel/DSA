@@ -6,4 +6,4 @@
 | insert | O(1) | O(n) |
 | search | O(n) | O(n) |
 | update | O(n) | O(n) |
-| dekete | O(1) | O(n) |
+| delete | O(1) | O(n) |
