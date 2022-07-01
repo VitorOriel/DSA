@@ -3,7 +3,7 @@
 ## Time complexity
 | Operation | Best case | Worst case |
 | :---: | :---: | :---: |
-| insert | O(1) | O(1) |
+| insert | O(1) | O(n) |
 | search | O(n) | O(n) |
 | update | O(n) | O(n) |
 | dekete | O(1) | O(n) |
