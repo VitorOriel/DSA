@@ -1,4 +1,3 @@
-#include <algorithm>
 #include <bits/stdc++.h>
 #include "heap.h"
 
@@ -10,21 +9,36 @@ Heap::Heap(size_t capacity) {
 
 Heap::Heap(int* array, size_t array_size) {
     this->capacity = this->getAjustedCapacity(array_size);
+    this->size = array_size;
+    this->pData = new int[this->capacity];
     for (size_t i = 0; i < array_size; ++i)
-        this->insert(array[i]);
+        this->pData[i] = array[i];
     for (size_t i = (this->size-1)/2; i > 0; --i)
-        this->heapify(i);
+        this->leafHeapify(i);
+    this->leafHeapify(0);
 }
 
 void Heap::insert(int data) {
     if (this->size < this->capacity) {
         this->pData[this->size] = data;
+        this->rootHeapify(this->size);
         ++this->size;
     }
     throw std::out_of_range("Can't insert due the heap reached the max capacity");
 }
 
-void Heap::heapify(size_t i) {
+int Heap::removeRoot() {
+    if (!this->isEmpty()) {
+        int root = this->pData[0];
+        std::swap(this->pData[0], this->pData[this->size-1]);
+        --this->size;
+        this->leafHeapify(0);
+        return root;
+    }
+    throw std::out_of_range("Can't remove from an empty heap");
+}
+
+void Heap::leafHeapify(size_t i) {
     size_t left = this->left(i);
     size_t right = this->right(i);
     size_t min = i;
@@ -34,7 +48,15 @@ void Heap::heapify(size_t i) {
         min = right;
     if (min != i) {
         std::swap(this->pData[i], this->pData[min]);
-        this->heapify(min);
+        this->leafHeapify(min);
+    }
+}
+
+void Heap::rootHeapify(size_t i) {
+    size_t parent = this->parent(i);
+    if (this->pData[i] < this->pData[parent]) {
+        std::swap(this->pData[i], this->pData[parent]);
+        this->rootHeapify(parent);
     }
 }
 
