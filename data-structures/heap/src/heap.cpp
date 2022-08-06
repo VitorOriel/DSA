@@ -1,4 +1,5 @@
 #include <bits/stdc++.h>
+#include <cstring>
 #include "heap.h"
 
 Heap::Heap(size_t capacity) {
@@ -11,8 +12,7 @@ Heap::Heap(int* array, size_t array_size) {
     this->capacity = this->getAjustedCapacity(array_size);
     this->size = array_size;
     this->pData = new int[this->capacity];
-    for (size_t i = 0; i < array_size; ++i)
-        this->pData[i] = array[i];
+    memcpy(this->pData, array, array_size*sizeof(int));
     for (size_t i = (this->size-1)/2; i > 0; --i)
         this->leafHeapify(i);
     this->leafHeapify(0);
