@@ -1,0 +1,23 @@
+#ifndef HEAP_H
+#define HEAP_H
+
+#include <cstddef>
+
+class Heap {
+    public:
+        Heap(size_t capacity);
+        Heap(int* array, size_t array_size);
+        ~Heap() { delete[] this->pData; }
+        void insert(int data);
+        void heapify(size_t i);
+    private:
+        inline const size_t left(size_t i) { return (i*2 + 1); }
+        inline const size_t right(size_t i) { return (i*2 + 2); }
+        inline const size_t parent(size_t i) { return ((i-1)/2); }
+        size_t getAjustedCapacity(size_t capacity);
+        int* pData;
+        size_t size;
+        size_t capacity;
+};
+
+#endif
