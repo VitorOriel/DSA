@@ -31,8 +31,8 @@ void Heap::insert(int data) {
 int Heap::removeRoot() {
     if (!this->isEmpty()) {
         int root = this->pData[0];
-        std::swap(this->pData[0], this->pData[this->size-1]);
         --this->size;
+        std::swap(this->pData[0], this->pData[this->size]);
         this->leafHeapify(0);
         return root;
     }
