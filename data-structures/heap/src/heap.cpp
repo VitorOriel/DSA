@@ -1,5 +1,6 @@
 #include <bits/stdc++.h>
 #include <cstring>
+#include <stdexcept>
 #include "heap.h"
 
 Heap::Heap(size_t capacity) {
@@ -24,7 +25,7 @@ void Heap::insert(int data) {
         this->rootHeapify(this->size);
         ++this->size;
     } else
-        throw std::out_of_range("Can't insert due the heap reached the max capacity");
+        throw std::length_error("Can't insert due the heap reached the max capacity: " + std::to_string(this->capacity));
 }
 
 int Heap::removeRoot() {
