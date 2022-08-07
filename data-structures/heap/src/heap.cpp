@@ -23,8 +23,8 @@ void Heap::insert(int data) {
         this->pData[this->size] = data;
         this->rootHeapify(this->size);
         ++this->size;
-    }
-    throw std::out_of_range("Can't insert due the heap reached the max capacity");
+    } else
+        throw std::out_of_range("Can't insert due the heap reached the max capacity");
 }
 
 int Heap::removeRoot() {
