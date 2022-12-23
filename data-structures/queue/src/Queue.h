@@ -34,7 +34,7 @@ Queue<T>::Queue(const Queue<T>& other) {
     Node<T>* crawlNode = other.pFront;
     while (crawlNode != nullptr) {
         this->enqueue(crawlNode->data);
-        crawlNode = crawlNode->pNext;
+        crawlNode = crawlNode->next;
     }
 }
 
@@ -44,7 +44,7 @@ void Queue<T>::enqueue(T item) {
     if (this->isEmpty())
         this->pFront = newNode;
     else
-        this->pBack->pNext = newNode;
+        this->pBack->next = newNode;
     this->pBack = newNode;
     this->size += 1;
 }
@@ -53,7 +53,7 @@ template<typename T>
 T Queue<T>::dequeue() {
     if (!this->isEmpty()) {
         Node<T>* dequeuedNode = this->pFront;
-        this->pFront = this->pFront->pNext;
+        this->pFront = this->pFront->next;
         this->size -= 1;
         T dequeuedData = dequeuedNode->data;
         delete dequeuedNode;

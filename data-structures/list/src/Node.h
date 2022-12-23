@@ -12,20 +12,20 @@ class Node {
     private:
         T data;
         Node* pPrevious;
-        Node* pNext;
+        Node* next;
 };
 
 template<typename T>
 Node<T>::Node(T item) {
     this->pPrevious = nullptr;
-    this->pNext = nullptr;
+    this->next = nullptr;
     this->data = item;
 }
 
 template<typename T>
 Node<T>::~Node() {
     this->pPrevious = nullptr;
-    this->pNext = nullptr;
+    this->next = nullptr;
 }
 
 #endif

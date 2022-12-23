@@ -33,7 +33,7 @@ Stack<T>::Stack(const Stack<T>& other) {
     Node<T>* crawlNode = other.pTop;
     while (crawlNode != nullptr) {
         tempStack.push(crawlNode->data);
-        crawlNode = crawlNode->pNext;
+        crawlNode = crawlNode->next;
     }
     while (!tempStack.isEmpty())
         this->push(tempStack.pop());
@@ -43,7 +43,7 @@ template<typename T>
 void Stack<T>::push(T item) {
     Node<T>* newNode = new Node<T>(item);
     if (!this->isEmpty())
-        newNode->pNext = this->pTop;
+        newNode->next = this->pTop;
     this->pTop = newNode;
     this->size += 1;
 }
@@ -52,7 +52,7 @@ template<typename T>
 T Stack<T>::pop() {
     if (!this->isEmpty()) {
         Node<T>* popNode = this->pTop;
-        this->pTop = this->pTop->pNext;
+        this->pTop = this->pTop->next;
         T popItem = popNode->data;
         this->size -= 1;
         delete popNode;
