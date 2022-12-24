@@ -14,46 +14,7 @@ class List {
         void remove(T item);
         T& operator[](size_t index);
         T operator[](size_t index) const { return *this[index]; }
-        class Iterator : public std::iterator<std::bidirectional_iterator_tag, T> {
-            public:
-                Iterator() noexcept : it_pCurrentNode(this->head) { }
-                Iterator(const Node<T>* pNode) noexcept : it_pCurrentNode(pNode) { }
-                Iterator& operator=(T item) {
-                    this->it_pCurrentNode->data = item;
-                    return *this;
-                }
-                Iterator& operator++() {
-                    if (this->it_pCurrentNode)
-                        this->it_pCurrentNode = this->it_pCurrentNode->next;
-                    return *this;
-                }
-                Iterator operator++(int) {
-                    Iterator iterator = *this;
-                    ++*this;
-                    return iterator;
-                }
-                Iterator& operator--() {
-                    if (this->it_pCurrentNode)
-                        this->it_pCurrentNode = this->it_pCurrentNode->pPrevious;
-                    return *this;
-                }
-                Iterator operator--(int) {
-                    Iterator iterator = *this;
-                    --*this;
-                    return iterator;
-                }
-                bool operator==(const Iterator& iterator) {
-                    return this->it_pCurrentNode == iterator.it_pCurrentNode;
-                }
-                bool operator!=(const Iterator& iterator) {
-                    return this->it_pCurrentNode != iterator.it_pCurrentNode;
-                }
-                T operator*() {
-                    return this->it_pCurrentNode->data;
-                }
-            private:
-                const Node<T>* it_pCurrentNode;
-        };
+        class Iterator;
         Iterator begin() noexcept { return Iterator(this->head); }
         Iterator cbegin() const noexcept { return Iterator(this->head); }
         Iterator rbegin() noexcept { return Iterator(this->tail); }
@@ -63,6 +24,48 @@ class List {
         Node<T>* head;
         Node<T>* tail;
         size_t size;
+};
+
+template<typename T>
+class List<T>::Iterator : public std::iterator<std::bidirectional_iterator_tag, T> {
+    public:
+        Iterator() noexcept : it_pCurrentNode(this->head) { }
+        Iterator(const Node<T>* pNode) noexcept : it_pCurrentNode(pNode) { }
+        Iterator& operator=(T item) {
+            this->it_pCurrentNode->data = item;
+            return *this;
+        }
+        Iterator& operator++() {
+            if (this->it_pCurrentNode)
+                this->it_pCurrentNode = this->it_pCurrentNode->next;
+            return *this;
+        }
+        Iterator operator++(int) {
+            Iterator iterator = *this;
+            ++*this;
+            return iterator;
+        }
+        Iterator& operator--() {
+            if (this->it_pCurrentNode)
+                this->it_pCurrentNode = this->it_pCurrentNode->pPrevious;
+            return *this;
+        }
+        Iterator operator--(int) {
+            Iterator iterator = *this;
+            --*this;
+            return iterator;
+        }
+        bool operator==(const Iterator& iterator) {
+            return this->it_pCurrentNode == iterator.it_pCurrentNode;
+        }
+        bool operator!=(const Iterator& iterator) {
+            return this->it_pCurrentNode != iterator.it_pCurrentNode;
+        }
+        T operator*() {
+            return this->it_pCurrentNode->data;
+        }
+    private:
+        const Node<T>* it_pCurrentNode;
 };
 
 template<typename T>
