@@ -1,10 +1,9 @@
 #ifndef BST_H
 #define BST_H
 
-#include "node.hpp"
-
 class BinaryTree {
     public:
+        class Iterator;
         BinaryTree();
         ~BinaryTree();
         void insert(int data);
@@ -12,6 +11,7 @@ class BinaryTree {
         int min();
         int max();
     private:
+        class Node;
         Node* insert(Node* node, int data);
         Node* searchNode(int data);
         Node* min(Node* subTreeRoot);

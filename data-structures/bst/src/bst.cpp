@@ -14,7 +14,7 @@ void BinaryTree::insert(int data) {
 }
 
 int BinaryTree::search(int data) {
-    Node* searchedNode = this->searchNode(data);
+    BinaryTree::Node* searchedNode = this->searchNode(data);
     if (searchedNode == nullptr)
         throw NotFoundException("Item " + std::to_string(data) + " not found");
     return searchedNode->data;
@@ -24,7 +24,7 @@ int BinaryTree::min() {
     if (this->root == nullptr)
         throw EmptyTreeException("Can't get min from an empty tree");
     else {
-        Node* minNode = this->min(this->root);
+        BinaryTree::Node* minNode = this->min(this->root);
         return minNode->data;
     }
 }
@@ -33,12 +33,12 @@ int BinaryTree::max() {
     if (this->root == nullptr)
         throw EmptyTreeException("Can't get max from an empty tree");
     else {
-        Node* maxNode = this->max(this->root);
+        BinaryTree::Node* maxNode = this->max(this->root);
         return maxNode->data;
     }
 }
 
-Node* BinaryTree::insert(Node* node, int data) {
+BinaryTree::Node* BinaryTree::insert(BinaryTree::Node* node, int data) {
     if (node == nullptr)
         return new Node(data);
     else {
@@ -53,8 +53,8 @@ Node* BinaryTree::insert(Node* node, int data) {
     return node;
 }
 
-Node* BinaryTree::searchNode(int data) {
-    Node* crawlNode = this->root;
+BinaryTree::Node* BinaryTree::searchNode(int data) {
+    BinaryTree::Node* crawlNode = this->root;
     while (crawlNode != nullptr) {
         if (crawlNode->data == data)
             return crawlNode;
@@ -66,13 +66,13 @@ Node* BinaryTree::searchNode(int data) {
     return crawlNode;
 }
 
-Node* BinaryTree::min(Node* subTreeRoot) {
+BinaryTree::Node* BinaryTree::min(BinaryTree::Node* subTreeRoot) {
     while (subTreeRoot->left != nullptr)
         subTreeRoot = subTreeRoot->left;
     return subTreeRoot;
 }
 
-Node* BinaryTree::max(Node* subTreeRoot) {
+BinaryTree::Node* BinaryTree::max(BinaryTree::Node* subTreeRoot) {
     while (subTreeRoot->right != nullptr)
         subTreeRoot = subTreeRoot->right;
     return subTreeRoot;

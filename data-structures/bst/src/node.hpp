@@ -1,7 +1,9 @@
 #ifndef NODE_H
 #define NODE_H
 
-class Node {
+#include "bst.hpp"
+
+class BinaryTree::Node {
     friend class BinaryTree;
 
     public:
@@ -14,14 +16,14 @@ class Node {
         Node* parent;
 };
 
-Node::Node(int item) {
+BinaryTree::Node::Node(int item) {
     this->left = nullptr;
     this->right = nullptr;
     this->parent = nullptr;
     this->data = item;
 }
 
-Node::~Node() {
+BinaryTree::Node::~Node() {
     this->left = nullptr;
     this->right = nullptr;
     this->parent = nullptr;
