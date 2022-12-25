@@ -15,6 +15,30 @@ int BST::BinarySearchTree::search(int data) {
     return searchedNode->data;
 }
 
+void BST::BinarySearchTree::remove(int data) {
+    BST::Node* removedNode = this->searchNode(data);
+    if (removedNode == nullptr)
+        throw NotFoundException("Item " + std::to_string(data) + " not found");
+    else {
+        if (removedNode->left == nullptr)
+            this->transplant(removedNode, removedNode->right);
+        else if (removedNode->right == nullptr)
+            this->transplant(removedNode, removedNode->left);
+        else {
+            BST::Node* successor = this->min(removedNode->right);
+            if (successor->parent != removedNode) {
+                this->transplant(successor, successor->right);
+                successor->right = removedNode->right;
+                successor->right->parent = successor;
+            }
+            this->transplant(removedNode, successor);
+            successor->left = removedNode->left;
+            successor->left->parent = successor;
+        }
+        delete removedNode;
+    }
+}
+
 int BST::BinarySearchTree::min() {
     if (this->root == nullptr)
         throw EmptyTreeException("Can't get min from an empty tree");

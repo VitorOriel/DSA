@@ -11,6 +11,7 @@ class BST::BinarySearchTree {
         ~BinarySearchTree() { this->destroyRecursive(this->root); }
         void insert(int data);
         int search(int data);
+        void remove(int data);
         int min();
         int max();
         InorderIterator begin() { return InorderIterator(this->root); }
