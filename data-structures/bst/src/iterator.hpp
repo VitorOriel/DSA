@@ -10,7 +10,6 @@ class BST::InorderIterator {
         InorderIterator(BST::Node* node);
         int next();
         inline bool hasNext() noexcept { return !this->stackIterator.empty(); }
-        inline int operator*() { return this->currentNode->data; }
     private:
         void pushLeftChildrens(BST::Node* node);
         BST::Node* currentNode;
