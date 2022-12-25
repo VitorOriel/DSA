@@ -1,6 +1,4 @@
 #include "iterator.hpp"
-#include <iostream>
-
 
 BST::InorderIterator::InorderIterator(BST::Node* node) {
     if (node != nullptr)
