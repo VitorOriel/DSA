@@ -1,17 +1,20 @@
-#ifndef BST_H
-#define BST_H
+#ifndef BINARY_TREE_H
+#define BINARY_TREE_H
 
-class BinaryTree {
+#include "namespace.hpp"
+#include "node.hpp"
+#include "iterator.hpp"
+
+class BST::BinaryTree {
     public:
-        class Iterator;
         BinaryTree();
         ~BinaryTree();
         void insert(int data);
         int search(int data);
         int min();
         int max();
+        InorderIterator begin() { return InorderIterator(this->root); }
     private:
-        class Node;
         Node* insert(Node* node, int data);
         Node* searchNode(int data);
         Node* min(Node* subTreeRoot);

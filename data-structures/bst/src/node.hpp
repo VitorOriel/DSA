@@ -1,10 +1,11 @@
 #ifndef NODE_H
 #define NODE_H
 
-#include "bst.hpp"
+#include "namespace.hpp"
 
-class BinaryTree::Node {
+class BST::Node {
     friend class BinaryTree;
+    friend class InorderIterator;
 
     public:
         Node(int item);
@@ -15,18 +16,5 @@ class BinaryTree::Node {
         Node* right;
         Node* parent;
 };
-
-BinaryTree::Node::Node(int item) {
-    this->left = nullptr;
-    this->right = nullptr;
-    this->parent = nullptr;
-    this->data = item;
-}
-
-BinaryTree::Node::~Node() {
-    this->left = nullptr;
-    this->right = nullptr;
-    this->parent = nullptr;
-}
 
 #endif
