@@ -4,7 +4,7 @@ using namespace BST;
 using namespace std;
 
 int main() {
-    BinaryTree* bst = new BinaryTree();
+    BinarySearchTree* bst = new BinarySearchTree();
     bst->insert(2);
     bst->insert(1);
     bst->insert(3);

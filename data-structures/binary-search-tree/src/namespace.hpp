@@ -4,7 +4,7 @@
 namespace BST {
     class Node;
     class InorderIterator;
-    class BinaryTree;
+    class BinarySearchTree;
 };
 
 #endif

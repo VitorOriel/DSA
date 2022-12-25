@@ -4,7 +4,7 @@
 #include "namespace.hpp"
 
 class BST::Node {
-    friend class BinaryTree;
+    friend class BinarySearchTree;
     friend class InorderIterator;
 
     public:

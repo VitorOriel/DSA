@@ -4,18 +4,18 @@
 #include "node.hpp"
 #include "exceptions.hpp"
 
-void BST::BinaryTree::insert(int data) {
+void BST::BinarySearchTree::insert(int data) {
     this->root = this->insert(this->root, data);
 }
 
-int BST::BinaryTree::search(int data) {
+int BST::BinarySearchTree::search(int data) {
     BST::Node* searchedNode = this->searchNode(data);
     if (searchedNode == nullptr)
         throw NotFoundException("Item " + std::to_string(data) + " not found");
     return searchedNode->data;
 }
 
-int BST::BinaryTree::min() {
+int BST::BinarySearchTree::min() {
     if (this->root == nullptr)
         throw EmptyTreeException("Can't get min from an empty tree");
     else {
@@ -24,7 +24,7 @@ int BST::BinaryTree::min() {
     }
 }
 
-int BST::BinaryTree::max() {
+int BST::BinarySearchTree::max() {
     if (this->root == nullptr)
         throw EmptyTreeException("Can't get max from an empty tree");
     else {
@@ -33,7 +33,7 @@ int BST::BinaryTree::max() {
     }
 }
 
-void BST::BinaryTree::destroyRecursive(BST::Node* node) {
+void BST::BinarySearchTree::destroyRecursive(BST::Node* node) {
     if (node != nullptr) {
         this->destroyRecursive(node->left);
         this->destroyRecursive(node->right);
@@ -41,7 +41,7 @@ void BST::BinaryTree::destroyRecursive(BST::Node* node) {
     }
 }
 
-BST::Node* BST::BinaryTree::insert(BST::Node* node, int data) {
+BST::Node* BST::BinarySearchTree::insert(BST::Node* node, int data) {
     if (node == nullptr)
         return new BST::Node(data);
     else {
@@ -56,7 +56,7 @@ BST::Node* BST::BinaryTree::insert(BST::Node* node, int data) {
     return node;
 }
 
-BST::Node* BST::BinaryTree::searchNode(int data) {
+BST::Node* BST::BinarySearchTree::searchNode(int data) {
     BST::Node* crawlNode = this->root;
     while (crawlNode != nullptr) {
         if (crawlNode->data == data)
@@ -69,13 +69,24 @@ BST::Node* BST::BinaryTree::searchNode(int data) {
     return crawlNode;
 }
 
-BST::Node* BST::BinaryTree::min(BST::Node* subTreeRoot) {
+void BST::BinarySearchTree::transplant(Node* old, Node* new_) {
+    if (old == this->root)
+        this->root = new_;
+    else if (old == old->parent->left)
+        old->parent->left = new_;
+    else
+        old->parent->right = new_;
+    if (new_ != nullptr)
+        new_->parent = old->parent;
+}
+
+BST::Node* BST::BinarySearchTree::min(BST::Node* subTreeRoot) {
     while (subTreeRoot->left != nullptr)
         subTreeRoot = subTreeRoot->left;
     return subTreeRoot;
 }
 
-BST::Node* BST::BinaryTree::max(BST::Node* subTreeRoot) {
+BST::Node* BST::BinarySearchTree::max(BST::Node* subTreeRoot) {
     while (subTreeRoot->right != nullptr)
         subTreeRoot = subTreeRoot->right;
     return subTreeRoot;

@@ -5,10 +5,10 @@
 #include "node.hpp"
 #include "iterator.hpp"
 
-class BST::BinaryTree {
+class BST::BinarySearchTree {
     public:
-        BinaryTree() { this->root = nullptr; }
-        ~BinaryTree() { this->destroyRecursive(this->root); }
+        BinarySearchTree() { this->root = nullptr; }
+        ~BinarySearchTree() { this->destroyRecursive(this->root); }
         void insert(int data);
         int search(int data);
         int min();
@@ -18,6 +18,7 @@ class BST::BinaryTree {
         void destroyRecursive(Node* node);
         Node* insert(Node* node, int data);
         Node* searchNode(int data);
+        void transplant(Node* old, Node* new_);
         Node* min(Node* subTreeRoot);
         Node* max(Node* subTreeRoot);
         Node* root;
