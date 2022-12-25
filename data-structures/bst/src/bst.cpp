@@ -4,12 +4,6 @@
 #include "node.hpp"
 #include "exceptions.hpp"
 
-BST::BinaryTree::BinaryTree() {
-    this->root = nullptr;
-}
-
-BST::BinaryTree::~BinaryTree() {}
-
 void BST::BinaryTree::insert(int data) {
     this->root = this->insert(this->root, data);
 }
@@ -36,6 +30,14 @@ int BST::BinaryTree::max() {
     else {
         BST::Node* maxNode = this->max(this->root);
         return maxNode->data;
+    }
+}
+
+void BST::BinaryTree::destroyRecursive(BST::Node* node) {
+    if (node != nullptr) {
+        this->destroyRecursive(node->left);
+        this->destroyRecursive(node->right);
+        delete node;
     }
 }
 

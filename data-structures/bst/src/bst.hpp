@@ -7,14 +7,15 @@
 
 class BST::BinaryTree {
     public:
-        BinaryTree();
-        ~BinaryTree();
+        BinaryTree() { this->root = nullptr; }
+        ~BinaryTree() { this->destroyRecursive(this->root); }
         void insert(int data);
         int search(int data);
         int min();
         int max();
         InorderIterator begin() { return InorderIterator(this->root); }
     private:
+        void destroyRecursive(Node* node);
         Node* insert(Node* node, int data);
         Node* searchNode(int data);
         Node* min(Node* subTreeRoot);

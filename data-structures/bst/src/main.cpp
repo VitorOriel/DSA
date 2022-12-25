@@ -11,5 +11,6 @@ int main() {
     for (InorderIterator it = bst->begin(); it.hasNext();)
         cout << it.next() << ' ';
     cout << endl;
+    delete bst;
     return 0;
 }
