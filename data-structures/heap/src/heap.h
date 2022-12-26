@@ -1,3 +1,8 @@
+/*
+ * Author: Vitor Oriel Borges
+ * Data Structures and Algorithms
+ */
+
 #ifndef HEAP_H
 #define HEAP_H
 

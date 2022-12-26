@@ -1,3 +1,8 @@
+/*
+ * Author: Vitor Oriel Borges
+ * Data Structures and Algorithms
+ */
+
 #include <string>
 #include "namespace.hpp"
 #include "bst.hpp"

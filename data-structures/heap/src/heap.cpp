@@ -1,3 +1,8 @@
+/*
+ * Author: Vitor Oriel Borges
+ * Data Structures and Algorithms
+ */
+
 #include <bits/stdc++.h>
 #include <cstring>
 #include <stdexcept>

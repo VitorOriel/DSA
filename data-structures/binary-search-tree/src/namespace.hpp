@@ -1,3 +1,8 @@
+/*
+ * Author: Vitor Oriel Borges
+ * Data Structures and Algorithms
+ */
+
 #ifndef BST_NAMESPACE_H
 #define BST_NAMESPACE_H
 

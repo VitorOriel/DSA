@@ -1,3 +1,8 @@
+/*
+ * Author: Vitor Oriel Borges
+ * Data Structures and Algorithms
+ */
+
 #ifndef EMPTY_QUEUE_EXCEPTION_H
 #define EMPTY_QUEUE_EXCEPTION_H
 

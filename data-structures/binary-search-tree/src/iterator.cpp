@@ -1,3 +1,8 @@
+/*
+ * Author: Vitor Oriel Borges
+ * Data Structures and Algorithms
+ */
+
 #include "iterator.hpp"
 
 BST::InorderIterator::InorderIterator(BST::Node* node) {

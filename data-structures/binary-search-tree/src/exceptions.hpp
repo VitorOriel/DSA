@@ -1,3 +1,8 @@
+/*
+ * Author: Vitor Oriel Borges
+ * Data Structures and Algorithms
+ */
+
 #ifndef EXCEPTIONS_H
 #define EXCEPTIONS_H
 
