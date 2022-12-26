@@ -3,8 +3,8 @@
  * Data Structures and Algorithms
  */
 
-#ifndef BST_NAMESPACE_H
-#define BST_NAMESPACE_H
+#ifndef BST_NAMESPACE_HPP
+#define BST_NAMESPACE_HPP
 
 namespace BST {
     class Node;

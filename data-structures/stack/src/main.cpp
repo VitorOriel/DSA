@@ -1,5 +1,5 @@
 #include <iostream>
-#include "Stack.h"
+#include "stack.hpp"
 using namespace std;
 
 void printStack(Stack<int>* stack) {

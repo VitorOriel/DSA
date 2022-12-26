@@ -3,8 +3,8 @@
  * Data Structures and Algorithms
  */
 
-#ifndef EXCEPTIONS_H
-#define EXCEPTIONS_H
+#ifndef EXCEPTIONS_HPP
+#define EXCEPTIONS_HPP
 
 #include <string>
 #include <stdexcept>

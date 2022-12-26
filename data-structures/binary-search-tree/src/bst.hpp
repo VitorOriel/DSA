@@ -3,8 +3,8 @@
  * Data Structures and Algorithms
  */
 
-#ifndef BINARY_TREE_H
-#define BINARY_TREE_H
+#ifndef BINARY_TREE_HPP
+#define BINARY_TREE_HPP
 
 #include "namespace.hpp"
 #include "node.hpp"

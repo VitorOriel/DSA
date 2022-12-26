@@ -3,12 +3,12 @@
  * Data Structures and Algorithms
  */
 
-#ifndef QUEUE_H
-#define QUEUE_H
+#ifndef QUEUE_HPP
+#define QUEUE_HPP
 
 #include <cstddef>
-#include "Node.h"
-#include "EmptyQueueException.h"
+#include "node.hpp"
+#include "exceptions.hpp"
 
 template<typename T>
 class Queue {

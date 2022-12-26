@@ -1,5 +1,5 @@
 #include <iostream>
-#include "Queue.h"
+#include "queue.hpp"
 using namespace std;
 
 void printQueue(Queue<int>* queue) {

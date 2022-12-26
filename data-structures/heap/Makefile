@@ -6,7 +6,7 @@ output: main.o heap.o
 main.o: src/main.cpp
 	g++ $(COMPILE_OBJECT_FLAGS) src/main.cpp
 
-heap.o: src/heap.cpp src/heap.h
+heap.o: src/heap.cpp src/heap.hpp
 	g++ $(COMPILE_OBJECT_FLAGS) src/heap.cpp
 
 clean:

@@ -3,12 +3,12 @@
  * Data Structures and Algorithms
  */
 
-#ifndef STACK_H
-#define STACK_H
+#ifndef STACK_HPP
+#define STACK_HPP
 
 #include <cstddef>
-#include "Node.h"
-#include "EmptyStackException.h"
+#include "node.hpp"
+#include "exceptions.hpp"
 
 template<typename T>
 class Stack {

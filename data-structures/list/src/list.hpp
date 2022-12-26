@@ -3,11 +3,11 @@
  * Data Structures and Algorithms
  */
 
-#ifndef LIST_H
-#define LIST_H
+#ifndef LIST_HPP
+#define LIST_HPP
 
 #include <cstddef>
-#include "Node.h"
+#include "node.hpp"
 
 template<typename T>
 class List {

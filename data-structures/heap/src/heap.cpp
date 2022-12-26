@@ -6,7 +6,7 @@
 #include <bits/stdc++.h>
 #include <cstring>
 #include <stdexcept>
-#include "heap.h"
+#include "heap.hpp"
 
 Heap::Heap(size_t capacity) {
     this->capacity = this->getAjustedCapacity(capacity);

@@ -1,5 +1,5 @@
 #include <iostream>
-#include "List.h"
+#include "list.hpp"
 using namespace std;
 
 void printList(List<int>& list) {

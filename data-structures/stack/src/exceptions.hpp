@@ -3,8 +3,8 @@
  * Data Structures and Algorithms
  */
 
-#ifndef EMPTY_STACK_EXCEPTION_H
-#define EMPTY_STACK_EXCEPTION_H
+#ifndef EXCEPTIONS_HPP
+#define EXCEPTIONS_HPP
 
 #include <string>
 #include <stdexcept>
