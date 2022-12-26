@@ -52,7 +52,7 @@ class List<T>::Iterator : public std::iterator<std::bidirectional_iterator_tag, 
         }
         Iterator& operator--() {
             if (this->it_pCurrentNode)
-                this->it_pCurrentNode = this->it_pCurrentNode->pPrevious;
+                this->it_pCurrentNode = this->it_pCurrentNode->previous;
             return *this;
         }
         Iterator operator--(int) {
@@ -106,7 +106,7 @@ void List<T>::append(T item) {
     if (this->head == nullptr)
         this->head = newNode;
     else {
-        newNode->pPrevious = this->tail;
+        newNode->previous = this->tail;
         this->tail->next = newNode;
     }
     this->tail = newNode;
@@ -126,11 +126,11 @@ void List<T>::remove(T item) {
         if (foundNode == this->head)
             this->head = this->head->next;
         if (foundNode == this->tail)
-            this->tail = this->tail->pPrevious;
+            this->tail = this->tail->previous;
         if (foundNode->next != nullptr)
-            foundNode->next->pPrevious = foundNode->pPrevious;
-        if (foundNode->pPrevious != nullptr)
-            foundNode->pPrevious->next = foundNode->next;
+            foundNode->next->previous = foundNode->previous;
+        if (foundNode->previous != nullptr)
+            foundNode->previous->next = foundNode->next;
         delete foundNode;
         this->size -= 1;
     }

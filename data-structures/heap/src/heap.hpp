@@ -12,7 +12,7 @@ class Heap {
     public:
         Heap(size_t capacity);
         Heap(int* array, size_t array_size);
-        ~Heap() { delete[] this->pData; }
+        ~Heap() { delete[] this->data; }
         inline bool isEmpty() { return this->size == 0; }
         void insert(int data);
         int removeRoot();
@@ -23,7 +23,7 @@ class Heap {
         inline const size_t left(size_t i) { return (i*2 + 1); }
         inline const size_t right(size_t i) { return (i*2 + 2); }
         inline const size_t parent(size_t i) { return ((i-1)/2); }
-        int* pData;
+        int* data;
         size_t size;
         size_t capacity;
 };

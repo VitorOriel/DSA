@@ -18,25 +18,25 @@ class Queue {
         ~Queue() { while(!this->isEmpty()) this->dequeue(); }
         void enqueue(T item);
         T dequeue();
-        inline bool isEmpty() { return this->pFront == nullptr; }
+        inline bool isEmpty() { return this->front == nullptr; }
     private:
         void _Queue(); // Base constructor
-        Node<T>* pBack;
-        Node<T>* pFront;
+        Node<T>* back;
+        Node<T>* front;
         size_t size;
 };  
 
 template<typename T>
 void Queue<T>::_Queue() {
-    this->pBack = nullptr;
-    this->pFront = nullptr;
+    this->back = nullptr;
+    this->front = nullptr;
     this->size = 0;
 }
 
 template<typename T>
 Queue<T>::Queue(const Queue<T>& other) {
     this->_Queue();
-    Node<T>* crawlNode = other.pFront;
+    Node<T>* crawlNode = other.front;
     while (crawlNode != nullptr) {
         this->enqueue(crawlNode->data);
         crawlNode = crawlNode->next;
@@ -47,18 +47,18 @@ template<typename T>
 void Queue<T>::enqueue(T item) {
     Node<T>* newNode = new Node<T>(item);
     if (this->isEmpty())
-        this->pFront = newNode;
+        this->front = newNode;
     else
-        this->pBack->next = newNode;
-    this->pBack = newNode;
+        this->back->next = newNode;
+    this->back = newNode;
     this->size += 1;
 }
 
 template<typename T>
 T Queue<T>::dequeue() {
     if (!this->isEmpty()) {
-        Node<T>* dequeuedNode = this->pFront;
-        this->pFront = this->pFront->next;
+        Node<T>* dequeuedNode = this->front;
+        this->front = this->front->next;
         this->size -= 1;
         T dequeuedData = dequeuedNode->data;
         delete dequeuedNode;

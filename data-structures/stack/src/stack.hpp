@@ -18,16 +18,16 @@ class Stack {
         ~Stack() { while(!this->isEmpty()) this->pop(); }
         void push(T item);
         T pop();
-        inline bool isEmpty() { return this->pTop == nullptr; }
+        inline bool isEmpty() { return this->top == nullptr; }
     private:
         void _Stack();
-        Node<T>* pTop;
+        Node<T>* top;
         size_t size;
 };
 
 template<typename T>
 void Stack<T>::_Stack() {
-    this->pTop = nullptr;
+    this->top = nullptr;
     this->size = 0;
 }
 
@@ -35,7 +35,7 @@ template<typename T>
 Stack<T>::Stack(const Stack<T>& other) {
     this->_Stack();
     Stack<T> tempStack = Stack<T>();
-    Node<T>* crawlNode = other.pTop;
+    Node<T>* crawlNode = other.top;
     while (crawlNode != nullptr) {
         tempStack.push(crawlNode->data);
         crawlNode = crawlNode->next;
@@ -48,16 +48,16 @@ template<typename T>
 void Stack<T>::push(T item) {
     Node<T>* newNode = new Node<T>(item);
     if (!this->isEmpty())
-        newNode->next = this->pTop;
-    this->pTop = newNode;
+        newNode->next = this->top;
+    this->top = newNode;
     this->size += 1;
 }
 
 template<typename T>
 T Stack<T>::pop() {
     if (!this->isEmpty()) {
-        Node<T>* popNode = this->pTop;
-        this->pTop = this->pTop->next;
+        Node<T>* popNode = this->top;
+        this->top = this->top->next;
         T popItem = popNode->data;
         this->size -= 1;
         delete popNode;
