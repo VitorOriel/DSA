@@ -98,7 +98,7 @@ BST::Node* BST::BinarySearchTree::searchNode(int data) {
     return crawlNode;
 }
 
-void BST::BinarySearchTree::transplant(Node* old, Node* new_) {
+void BST::BinarySearchTree::transplant(BST::Node* old, BST::Node* new_) {
     if (old == this->root)
         this->root = new_;
     else if (old == old->parent->left)

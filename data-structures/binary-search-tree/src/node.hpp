@@ -9,8 +9,8 @@
 #include "namespace.hpp"
 
 class BST::Node {
-    friend class BinarySearchTree;
-    friend class InorderIterator;
+    friend class BST::BinarySearchTree;
+    friend class BST::InorderIterator;
 
     public:
         Node(int item);

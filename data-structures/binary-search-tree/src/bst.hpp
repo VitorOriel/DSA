@@ -19,15 +19,15 @@ class BST::BinarySearchTree {
         void remove(int data);
         int min();
         int max();
-        InorderIterator begin() { return InorderIterator(this->root); }
+        BST::InorderIterator begin() { return BST::InorderIterator(this->root); }
     private:
-        void destroyRecursive(Node* node);
-        Node* insert(Node* node, int data);
-        Node* searchNode(int data);
-        void transplant(Node* old, Node* new_);
-        Node* min(Node* subTreeRoot);
-        Node* max(Node* subTreeRoot);
-        Node* root;
+        void destroyRecursive(BST::Node* node);
+        BST::Node* insert(BST::Node* node, int data);
+        BST::Node* searchNode(int data);
+        void transplant(BST::Node* old, BST::Node* new_);
+        BST::Node* min(BST::Node* subTreeRoot);
+        BST::Node* max(BST::Node* subTreeRoot);
+        BST::Node* root;
 };
 
 #endif

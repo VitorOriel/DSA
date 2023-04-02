@@ -1,16 +1,16 @@
 #include <iostream>
 #include "bst.hpp"
-using namespace BST;
+
 using namespace std;
 
-void printTree(BinarySearchTree* tree) {
-    for (InorderIterator it = tree->begin(); it.hasNext();)
+void printTree(BST::BinarySearchTree* tree) {
+    for (BST::InorderIterator it = tree->begin(); it.hasNext();)
         cout << it.next() << ' ';
     cout << endl;
 }
 
 int main() {
-    BinarySearchTree* bst = new BinarySearchTree();
+    BST::BinarySearchTree* bst = new BST::BinarySearchTree();
     bst->insert(3);
     bst->insert(1);
     bst->insert(2);
