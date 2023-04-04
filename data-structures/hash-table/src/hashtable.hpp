@@ -9,36 +9,83 @@
 template<typename K, typename V, typename H = std::hash<K>>
 class HT::HashTable {
     public:
-        HashTable();
-        ~HashTable();
-        size_t hashFunction(K key);
+        HashTable() { this->tableConstructor(1); }
+        ~HashTable() { this->tableDestructor(this->array, this->capacity); }
+        void insert(K key, V value);
     private:
+        void tableConstructor(size_t capacity);
+        void tableDestructor(Node<K,V>** array, size_t capacity);
+        float loadFactor() { return static_cast<float>((1 + this->capacity - this->numberOfNodes - this->freeBuckets) / this->capacity); }
+        void resize();
+        size_t hashFunction(K key);
         size_t capacity;
-        size_t numberOfBuckets;
+        size_t numberOfNodes;
+        size_t freeBuckets;
         H _hash;
         HT::Node<K,V>** array;
 };
 
 template<typename K, typename V, typename H>
-HT::HashTable<K,V,H>::HashTable() {
-    this->numberOfBuckets = 0;
-    this->capacity = 1;
-    this->array = new HT::Node<K,V>*[this->capacity];
-    this->array[0] = nullptr;
+void HT::HashTable<K,V,H>::insert(K key, V value) {
+    while (this->loadFactor() > 0.5f)
+        this->resize();
+    size_t keyIndex = this->hashFunction(key);
+    size_t keyHash = this->_hash(key);
+    HT::Node<K,V>* crawlNode = this->array[keyIndex];
+    HT::Node<K,V>* previousNode = crawlNode;
+    while (crawlNode != nullptr && keyHash != this->_hash(crawlNode->key)) {
+        previousNode = crawlNode;
+        crawlNode = crawlNode->next;
+    }
+    if (crawlNode == nullptr) {
+        HT::Node<K,V>* newNode = new HT::Node<K,V>(key, value);
+        if (previousNode == nullptr) {
+            this->array[keyIndex] = newNode;
+            --this->freeBuckets;
+        } else
+            previousNode->next = newNode;
+        ++this->numberOfNodes;
+    } else
+        crawlNode->value = value;
 }
 
 template<typename K, typename V, typename H>
-HT::HashTable<K,V,H>::~HashTable() {
+void HT::HashTable<K,V,H>::tableConstructor(size_t capacity) {
+    this->numberOfNodes = 0;
+    this->capacity = capacity;
+    this->freeBuckets = capacity;
+    this->array = new HT::Node<K,V>*[this->capacity];
+    for (size_t i = 0; i < this->capacity; ++i)
+        this->array[i] = nullptr;
+}
+
+template<typename K, typename V, typename H>
+void HT::HashTable<K,V,H>::tableDestructor(Node<K,V>** array, size_t capacity) {
     Node<K,V>* temp = nullptr;
-    for (size_t i = 0; i < this->capacity; ++i) {
-        Node<K,V>* crawlNode = this->array[i];
+    for (size_t i = 0; i < capacity; ++i) {
+        Node<K,V>* crawlNode = array[i];
         while (crawlNode != nullptr) {
             temp = crawlNode;
             crawlNode = crawlNode->next;
             delete temp;
         }
     }
-    delete[] this->array;
+    delete[] array;
+}
+
+template<typename K, typename V, typename H>
+void HT::HashTable<K,V,H>::resize() {
+    size_t oldCapacity = this->capacity;
+    Node<K,V>** temp = this->array;
+    this->tableConstructor(this->capacity*2);
+    for (size_t i = 0; i < oldCapacity; ++i) {
+        Node<K,V>* crawlNode = temp[i];
+        while (crawlNode != nullptr) {
+            this->insert(crawlNode->key, crawlNode->value);
+            crawlNode = crawlNode->next;
+        }
+    }
+    this->tableDestructor(temp, oldCapacity);
 }
 
 template<typename K, typename V, typename H>
