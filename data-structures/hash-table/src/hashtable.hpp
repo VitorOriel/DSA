@@ -1,4 +1,4 @@
-#ifndef HADH_TABLE_HPP
+#ifndef HASH_TABLE_HPP
 #define HASH_TABLE_HPP
 
 #include <cstddef>
