@@ -8,16 +8,18 @@ class HT::Node {
     template<typename T, typename U, typename H>
     friend class HT::HashTable;
     public:
-        Node();
+        Node(K key, V value);
         ~Node() { }
     private:
-        Node<K,V>* next;
         K key;
         V value;
+        Node<K,V>* next;
 };
 
 template<typename K, typename V>
-HT::Node<K,V>::Node() {
+HT::Node<K,V>::Node(K key, V value) {
+    this->key = key;
+    this->value = value;
     this->next = nullptr;
 }
 
