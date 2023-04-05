@@ -7,6 +7,7 @@
 #define HASH_TABLE_HPP
 
 #include <cstddef>
+#include <functional>
 #include "namespace.hpp"
 #include "node.hpp"
 
