@@ -19,7 +19,7 @@ class HT::HashTable {
         ~HashTable() { this->tableDestructor(this->array, this->capacity); }
         HT::Node<K,V>* set(K key, V value);
         V& get(K key);
-        V& operator[](K key) { return this->get(key); }
+        V& operator[](K key);
     private:
         void tableConstructor(size_t capacity);
         void tableDestructor(Node<K,V>** array, size_t capacity);
@@ -63,6 +63,14 @@ HT::Node<K,V>* HT::HashTable<K,V,H>::set(K key, V value) {
 
 template<typename K, typename V, typename H>
 V& HT::HashTable<K,V,H>::get(K key) {
+    HT::Node<K,V>* searchedNode = this->find(key);
+    if (searchedNode == nullptr)
+        throw std::out_of_range("Could not get from key " + std::string(key));
+    return searchedNode->value;
+}
+
+template<typename K, typename V, typename H>
+V& HT::HashTable<K,V,H>::operator[](K key) {
     HT::Node<K,V>* searchedNode = this->find(key);
     if (searchedNode == nullptr)
         searchedNode = this->set(key, V());
