@@ -12,50 +12,31 @@
 #include "namespace.hpp"
 #include "node.hpp"
 
-template<typename K, typename V, typename H>
-std::ostream& operator<<(std::ostream& os, const HT::HashTable<K,V,H>& hashTable);
-
 template<typename K, typename V, typename H = std::hash<K>>
 class HT::HashTable {
-    friend std::ostream& operator<<<K,V,H>(std::ostream& os, const HT::HashTable<K,V,H>& hashTable);
     public:
-        HashTable() { this->tableConstructor(1); this->clearCarry(); }
+        HashTable() { this->tableConstructor(1); }
         ~HashTable() { this->tableDestructor(this->array, this->capacity); }
-        void set(K key, V value);
-        V get(K key) { return this->getNode(key)->value; }
-        HT::HashTable<K,V,H>& operator[](K key);
-        HT::HashTable<K,V,H>& operator=(V value);
-        const void* operator=(const HT::HashTable<K,V,H>& hashTable);
+        HT::Node<K,V>* set(K key, V value);
+        V& get(K key);
+        V& operator[](K key) { return this->get(key); }
     private:
         void tableConstructor(size_t capacity);
         void tableDestructor(Node<K,V>** array, size_t capacity);
         float loadFactor() { return static_cast<float>((1 + this->capacity - this->numberOfNodes - this->freeBuckets) / this->capacity); }
         void resize();
         size_t hashFunction(K key);
-        HT::Node<K,V>* getNode(K key);
-        void clearCarry();
+        HT::Node<K,V>* find(K key);
 
         size_t capacity;
         size_t numberOfNodes;
         size_t freeBuckets;
         H _hash;
         HT::Node<K,V>** array;
-        HT::Node<K,V>* _carryNode;
-        K* _carryKey;
-        V* _carryValue;
-        std::out_of_range* _carryException;
 };
 
 template<typename K, typename V, typename H>
-std::ostream& operator<<(std::ostream& os, const HT::HashTable<K,V,H>& hashTable) {
-    if (hashTable._carryNode == nullptr)
-        throw hashTable._carryException;
-    os << hashTable._carryNode->value;
-    return os;
-}
-
-template<typename K, typename V, typename H>
-void HT::HashTable<K,V,H>::set(K key, V value) {
+HT::Node<K,V>* HT::HashTable<K,V,H>::set(K key, V value) {
     while (this->loadFactor() > 0.5f)
         this->resize();
     size_t keyIndex = this->hashFunction(key);
@@ -74,51 +55,22 @@ void HT::HashTable<K,V,H>::set(K key, V value) {
         } else
             previousNode->next = newNode;
         ++this->numberOfNodes;
+        return newNode;
     } else
         crawlNode->value = value;
+    return crawlNode;
 }
 
 template<typename K, typename V, typename H>
-HT::HashTable<K,V,H>& HT::HashTable<K,V,H>::operator[](K key) {
-    this->clearCarry();
-    try {
-        this->_carryNode = this->getNode(key);
-        this->_carryValue = &this->_carryNode->value;
-    } catch (std::out_of_range& e) {
-        this->_carryNode = nullptr;
-        this->_carryKey = &key;
-        this->_carryException = &e;
-    }
-    return *this;
+V& HT::HashTable<K,V,H>::get(K key) {
+    HT::Node<K,V>* searchedNode = this->find(key);
+    if (searchedNode == nullptr)
+        searchedNode = this->set(key, V());
+    return searchedNode->value;
 }
 
 template<typename K, typename V, typename H>
-HT::HashTable<K,V,H>& HT::HashTable<K,V,H>::operator=(V value) {
-    K key;
-    if (this->_carryNode != nullptr)
-        key = this->_carryNode->key;
-    else
-        key = *this->_carryKey;
-    this->set(key, value);
-    return *this;
-}
-
-template<typename K, typename V, typename H>
-const void* HT::HashTable<K,V,H>::operator=(const HT::HashTable<K,V,H>& hashTable) {
-    if (hashTable._carryNode != nullptr)
-        return reinterpret_cast<V*>(hashTable._carryNode->value);
-    if (hashTable._carryException != nullptr) {
-        if (hashTable._carryValue != nullptr) {
-            this->set(*hashTable._carryKey, *hashTable._carryValue);
-            this->_carryValue = nullptr;
-        } else
-            throw hashTable._carryException;
-    }
-    return &hashTable;
-}
-
-template<typename K, typename V, typename H>
-HT::Node<K,V>* HT::HashTable<K,V,H>::getNode(K key) {
+HT::Node<K,V>* HT::HashTable<K,V,H>::find(K key) {
     size_t keyIndex = this->hashFunction(key);
     size_t keyHash = this->_hash(key);
     HT::Node<K,V>* crawlNode = this->array[keyIndex];
@@ -127,7 +79,7 @@ HT::Node<K,V>* HT::HashTable<K,V,H>::getNode(K key) {
             return crawlNode;
         crawlNode = crawlNode->next;
     }
-    throw std::out_of_range("could not found the key: " + std::string(key));
+    return crawlNode;
 }
 
 template<typename K, typename V, typename H>
@@ -173,13 +125,6 @@ template<typename K, typename V, typename H>
 size_t HT::HashTable<K,V,H>::hashFunction(K key) {
     size_t keyHash = this->_hash(key);
     return keyHash % this->capacity;
-}
-
-template<typename K, typename V, typename H>
-void HT::HashTable<K,V,H>::clearCarry() {
-    this->_carryNode = nullptr;
-    this->_carryException = nullptr;
-    this->_carryKey = nullptr;
 }
 
 #endif
