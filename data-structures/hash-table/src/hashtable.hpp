@@ -1,3 +1,8 @@
+/*
+ * Author: Vitor Oriel Borges
+ * Data Structures and Algorithms
+ */
+
 #ifndef HASH_TABLE_HPP
 #define HASH_TABLE_HPP
 

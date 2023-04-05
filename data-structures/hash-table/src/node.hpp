@@ -1,3 +1,8 @@
+/*
+ * Author: Vitor Oriel Borges
+ * Data Structures and Algorithms
+ */
+
 #ifndef NODE_HPP
 #define NODE_HPP
 

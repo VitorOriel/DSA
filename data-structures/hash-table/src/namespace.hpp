@@ -1,3 +1,8 @@
+/*
+ * Author: Vitor Oriel Borges
+ * Data Structures and Algorithms
+ */
+
 #ifndef HT_NAMESPACE_HPP
 #define HT_NAMESPACE_HPP
 
