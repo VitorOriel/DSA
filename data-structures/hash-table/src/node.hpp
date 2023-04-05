@@ -10,9 +10,9 @@ class HT::Node {
     public:
         Node(K key, V value);
         ~Node() { }
-    private:
         K key;
         V value;
+    private:
         Node<K,V>* next;
 };
 
