@@ -4,7 +4,7 @@
 using namespace std;
 
 int main() {
-    HT::HashTable<string,int> hashTable = HT::HashTable<string,int>();
+    HT::HashTable<string,int> hashTable;
     hashTable["test"] = 15;
     hashTable["test2"] = hashTable["test"];
     cout << hashTable["test2"] << endl;
