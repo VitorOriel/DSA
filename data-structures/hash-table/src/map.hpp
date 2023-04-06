@@ -24,13 +24,13 @@ class HT::Map {
         void tableDestructor(Node<Key_T,Value_T>** array, size_t capacity);
         float loadFactor() { return static_cast<float>((1 + this->numberOfNodes) / this->capacity); }
         void resize(size_t newCapacity);
-        size_t hashFunction(const Key_T& key);
+        size_t hashFunction(const Key_T& key) { return this->hash(key) % this->capacity; }
         HT::Node<Key_T,Value_T>* find(const Key_T& key);
 
         size_t capacity;
         size_t numberOfNodes;
         size_t freeBuckets;
-        Hash _hash;
+        Hash hash;
         HT::Node<Key_T,Value_T>** array;
 };
 
@@ -39,10 +39,10 @@ HT::Node<Key_T,Value_T>* HT::Map<Key_T,Value_T,Hash>::set(const Key_T& key, cons
     while (this->loadFactor() > 0.5f)
         this->resize(this->capacity*2);
     size_t keyIndex = this->hashFunction(key);
-    size_t keyHash = this->_hash(key);
+    size_t keyHash = this->hash(key);
     HT::Node<Key_T,Value_T>* crawlNode = this->array[keyIndex];
     HT::Node<Key_T,Value_T>* previousNode = crawlNode;
-    while (crawlNode != nullptr && keyHash != this->_hash(crawlNode->key)) {
+    while (crawlNode != nullptr && keyHash != this->hash(crawlNode->key)) {
         previousNode = crawlNode;
         crawlNode = crawlNode->next;
     }
@@ -79,10 +79,10 @@ Value_T& HT::Map<Key_T,Value_T,Hash>::operator[](const Key_T& key) {
 template<typename Key_T, typename Value_T, class Hash>
 HT::Node<Key_T,Value_T>* HT::Map<Key_T,Value_T,Hash>::find(const Key_T& key) {
     size_t keyIndex = this->hashFunction(key);
-    size_t keyHash = this->_hash(key);
+    size_t keyHash = this->hash(key);
     HT::Node<Key_T,Value_T>* crawlNode = this->array[keyIndex];
     while (crawlNode != nullptr) {
-        if (keyHash == this->_hash(crawlNode->key))
+        if (keyHash == this->hash(crawlNode->key))
             return crawlNode;
         crawlNode = crawlNode->next;
     }
@@ -126,12 +126,6 @@ void HT::Map<Key_T,Value_T,Hash>::resize(size_t newCapacity) {
         }
     }
     this->tableDestructor(temp, oldCapacity);
-}
-
-template<typename Key_T, typename Value_T, class Hash>
-size_t HT::Map<Key_T,Value_T,Hash>::hashFunction(const Key_T& key) {
-    size_t keyHash = this->_hash(key);
-    return keyHash % this->capacity;
 }
 
 #endif
