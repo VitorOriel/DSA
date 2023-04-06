@@ -13,7 +13,7 @@ class HT::Node {
     template<typename T, typename U, typename H>
     friend class HT::Map;
     public:
-        Node(K key, V value);
+        Node(const K& key, const V& value);
         ~Node() { }
         K key;
         V value;
@@ -22,7 +22,7 @@ class HT::Node {
 };
 
 template<typename K, typename V>
-HT::Node<K,V>::Node(K key, V value) {
+HT::Node<K,V>::Node(const K& key, const V& value) {
     this->key = key;
     this->value = value;
     this->next = nullptr;
