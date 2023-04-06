@@ -8,21 +8,21 @@
 
 #include "namespace.hpp"
 
-template<typename K, typename V>
+template<typename Key_T, typename Value_T>
 class HT::Node {
-    template<typename T, typename U, typename H>
+    template<typename T, typename U, class Hash>
     friend class HT::Map;
     public:
-        Node(const K& key, const V& value);
+        Node(const Key_T& key, const Value_T& value);
         ~Node() { }
-        K key;
-        V value;
+        Key_T key;
+        Value_T value;
     private:
-        Node<K,V>* next;
+        Node<Key_T,Value_T>* next;
 };
 
-template<typename K, typename V>
-HT::Node<K,V>::Node(const K& key, const V& value) {
+template<typename Key_T, typename Value_T>
+HT::Node<Key_T,Value_T>::Node(const Key_T& key, const Value_T& value) {
     this->key = key;
     this->value = value;
     this->next = nullptr;

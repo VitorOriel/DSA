@@ -7,9 +7,9 @@
 #define HT_NAMESPACE_HPP
 
 namespace HT {
-    template<typename K, typename V, typename H>
+    template<typename Key_T, typename Value_T, class Hash>
     class Map;
-    template<typename K, typename V>
+    template<typename Key_T, typename Value_T>
     class Node;
 }
 
