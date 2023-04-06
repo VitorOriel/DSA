@@ -1,17 +1,15 @@
 #include <iostream>
-#include "hashtable.hpp"
-
-using namespace std;
+#include "map.hpp"
 
 int main() {
-    HT::HashTable<string,int> hashTable;
-    hashTable["test"] = 15;
-    hashTable["test2"] = hashTable["test"];
-    cout << hashTable["test2"] << endl;
+    HT::Map<std::string,int> map;
+    map["test"] = 15;
+    map["test2"] = map["test"];
+    std::cout << map["test2"] << std::endl;
     try {
-        cout << hashTable.get("test3") << endl;
+        std::cout << map.get("test3") << std::endl;
     } catch (std::out_of_range& e) {
-        cout << e.what() << endl;
+        std::cout << e.what() << std::endl;
     }
     return 0;
 }

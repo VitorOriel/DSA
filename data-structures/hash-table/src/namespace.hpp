@@ -8,7 +8,7 @@
 
 namespace HT {
     template<typename K, typename V, typename H>
-    class HashTable;
+    class Map;
     template<typename K, typename V>
     class Node;
 }

@@ -3,15 +3,15 @@
  * Data Structures and Algorithms
  */
 
-#ifndef NODE_HPP
-#define NODE_HPP
+#ifndef HT_NODE_HPP
+#define HT_NODE_HPP
 
 #include "namespace.hpp"
 
 template<typename K, typename V>
 class HT::Node {
     template<typename T, typename U, typename H>
-    friend class HT::HashTable;
+    friend class HT::Map;
     public:
         Node(K key, V value);
         ~Node() { }

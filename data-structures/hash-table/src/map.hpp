@@ -3,8 +3,8 @@
  * Data Structures and Algorithms
  */
 
-#ifndef HASH_TABLE_HPP
-#define HASH_TABLE_HPP
+#ifndef HT_MAP_HPP
+#define HT_MAP_HPP
 
 #include <cstddef>
 #include <functional>
@@ -12,10 +12,10 @@
 #include "node.hpp"
 
 template<typename K, typename V, typename H = std::hash<K>>
-class HT::HashTable {
+class HT::Map {
     public:
-        HashTable() { this->tableConstructor(1); }
-        ~HashTable() { this->tableDestructor(this->array, this->capacity); }
+        Map() { this->tableConstructor(1); }
+        ~Map() { this->tableDestructor(this->array, this->capacity); }
         HT::Node<K,V>* set(K key, V value);
         V& get(K key);
         V& operator[](K key);
@@ -35,7 +35,7 @@ class HT::HashTable {
 };
 
 template<typename K, typename V, typename H>
-HT::Node<K,V>* HT::HashTable<K,V,H>::set(K key, V value) {
+HT::Node<K,V>* HT::Map<K,V,H>::set(K key, V value) {
     while (this->loadFactor() > 0.5f)
         this->resize(this->capacity*2);
     size_t keyIndex = this->hashFunction(key);
@@ -61,7 +61,7 @@ HT::Node<K,V>* HT::HashTable<K,V,H>::set(K key, V value) {
 }
 
 template<typename K, typename V, typename H>
-V& HT::HashTable<K,V,H>::get(K key) {
+V& HT::Map<K,V,H>::get(K key) {
     HT::Node<K,V>* searchedNode = this->find(key);
     if (searchedNode == nullptr)
         throw std::out_of_range("Could not get from key " + std::string(key));
@@ -69,7 +69,7 @@ V& HT::HashTable<K,V,H>::get(K key) {
 }
 
 template<typename K, typename V, typename H>
-V& HT::HashTable<K,V,H>::operator[](K key) {
+V& HT::Map<K,V,H>::operator[](K key) {
     HT::Node<K,V>* searchedNode = this->find(key);
     if (searchedNode == nullptr)
         searchedNode = this->set(key, V());
@@ -77,7 +77,7 @@ V& HT::HashTable<K,V,H>::operator[](K key) {
 }
 
 template<typename K, typename V, typename H>
-HT::Node<K,V>* HT::HashTable<K,V,H>::find(K key) {
+HT::Node<K,V>* HT::Map<K,V,H>::find(K key) {
     size_t keyIndex = this->hashFunction(key);
     size_t keyHash = this->_hash(key);
     HT::Node<K,V>* crawlNode = this->array[keyIndex];
@@ -90,7 +90,7 @@ HT::Node<K,V>* HT::HashTable<K,V,H>::find(K key) {
 }
 
 template<typename K, typename V, typename H>
-void HT::HashTable<K,V,H>::tableConstructor(size_t capacity) {
+void HT::Map<K,V,H>::tableConstructor(size_t capacity) {
     this->numberOfNodes = 0;
     this->capacity = capacity;
     this->freeBuckets = capacity;
@@ -100,7 +100,7 @@ void HT::HashTable<K,V,H>::tableConstructor(size_t capacity) {
 }
 
 template<typename K, typename V, typename H>
-void HT::HashTable<K,V,H>::tableDestructor(Node<K,V>** array, size_t capacity) {
+void HT::Map<K,V,H>::tableDestructor(Node<K,V>** array, size_t capacity) {
     Node<K,V>* temp = nullptr;
     for (size_t i = 0; i < capacity; ++i) {
         Node<K,V>* crawlNode = array[i];
@@ -114,7 +114,7 @@ void HT::HashTable<K,V,H>::tableDestructor(Node<K,V>** array, size_t capacity) {
 }
 
 template<typename K, typename V, typename H>
-void HT::HashTable<K,V,H>::resize(size_t newCapacity) {
+void HT::Map<K,V,H>::resize(size_t newCapacity) {
     size_t oldCapacity = this->capacity;
     Node<K,V>** temp = this->array;
     this->tableConstructor(newCapacity);
@@ -129,7 +129,7 @@ void HT::HashTable<K,V,H>::resize(size_t newCapacity) {
 }
 
 template<typename K, typename V, typename H>
-size_t HT::HashTable<K,V,H>::hashFunction(K key) {
+size_t HT::Map<K,V,H>::hashFunction(K key) {
     size_t keyHash = this->_hash(key);
     return keyHash % this->capacity;
 }
