@@ -16,16 +16,16 @@ class HT::Map {
     public:
         Map() { this->tableConstructor(1); }
         ~Map() { this->tableDestructor(this->array, this->capacity); }
-        HT::Node<K,V>* set(K key, V value);
-        V& get(K key);
-        V& operator[](K key);
+        HT::Node<K,V>* set(const K& key, const V& value);
+        V& get(const K& key);
+        V& operator[](const K& key);
     private:
         void tableConstructor(size_t capacity);
         void tableDestructor(Node<K,V>** array, size_t capacity);
         float loadFactor() { return static_cast<float>((1 + this->numberOfNodes) / this->capacity); }
         void resize(size_t newCapacity);
-        size_t hashFunction(K key);
-        HT::Node<K,V>* find(K key);
+        size_t hashFunction(const K& key);
+        HT::Node<K,V>* find(const K& key);
 
         size_t capacity;
         size_t numberOfNodes;
@@ -35,7 +35,7 @@ class HT::Map {
 };
 
 template<typename K, typename V, typename H>
-HT::Node<K,V>* HT::Map<K,V,H>::set(K key, V value) {
+HT::Node<K,V>* HT::Map<K,V,H>::set(const K& key, const V& value) {
     while (this->loadFactor() > 0.5f)
         this->resize(this->capacity*2);
     size_t keyIndex = this->hashFunction(key);
@@ -61,7 +61,7 @@ HT::Node<K,V>* HT::Map<K,V,H>::set(K key, V value) {
 }
 
 template<typename K, typename V, typename H>
-V& HT::Map<K,V,H>::get(K key) {
+V& HT::Map<K,V,H>::get(const K& key) {
     HT::Node<K,V>* searchedNode = this->find(key);
     if (searchedNode == nullptr)
         throw std::out_of_range("Could not get from key " + std::string(key));
@@ -69,7 +69,7 @@ V& HT::Map<K,V,H>::get(K key) {
 }
 
 template<typename K, typename V, typename H>
-V& HT::Map<K,V,H>::operator[](K key) {
+V& HT::Map<K,V,H>::operator[](const K& key) {
     HT::Node<K,V>* searchedNode = this->find(key);
     if (searchedNode == nullptr)
         searchedNode = this->set(key, V());
@@ -77,7 +77,7 @@ V& HT::Map<K,V,H>::operator[](K key) {
 }
 
 template<typename K, typename V, typename H>
-HT::Node<K,V>* HT::Map<K,V,H>::find(K key) {
+HT::Node<K,V>* HT::Map<K,V,H>::find(const K& key) {
     size_t keyIndex = this->hashFunction(key);
     size_t keyHash = this->_hash(key);
     HT::Node<K,V>* crawlNode = this->array[keyIndex];
@@ -129,7 +129,7 @@ void HT::Map<K,V,H>::resize(size_t newCapacity) {
 }
 
 template<typename K, typename V, typename H>
-size_t HT::Map<K,V,H>::hashFunction(K key) {
+size_t HT::Map<K,V,H>::hashFunction(const K& key) {
     size_t keyHash = this->_hash(key);
     return keyHash % this->capacity;
 }
