@@ -22,8 +22,8 @@ class HT::HashTable {
     private:
         void tableConstructor(size_t capacity);
         void tableDestructor(Node<K,V>** array, size_t capacity);
-        float loadFactor() { return static_cast<float>((1 + this->capacity - this->numberOfNodes - this->freeBuckets) / this->capacity); }
-        void resize();
+        float loadFactor() { return static_cast<float>((1 + this->numberOfNodes) / this->capacity); }
+        void resize(size_t newCapacity);
         size_t hashFunction(K key);
         HT::Node<K,V>* find(K key);
 
@@ -37,7 +37,7 @@ class HT::HashTable {
 template<typename K, typename V, typename H>
 HT::Node<K,V>* HT::HashTable<K,V,H>::set(K key, V value) {
     while (this->loadFactor() > 0.5f)
-        this->resize();
+        this->resize(this->capacity*2);
     size_t keyIndex = this->hashFunction(key);
     size_t keyHash = this->_hash(key);
     HT::Node<K,V>* crawlNode = this->array[keyIndex];
@@ -114,10 +114,10 @@ void HT::HashTable<K,V,H>::tableDestructor(Node<K,V>** array, size_t capacity) {
 }
 
 template<typename K, typename V, typename H>
-void HT::HashTable<K,V,H>::resize() {
+void HT::HashTable<K,V,H>::resize(size_t newCapacity) {
     size_t oldCapacity = this->capacity;
     Node<K,V>** temp = this->array;
-    this->tableConstructor(this->capacity*2);
+    this->tableConstructor(newCapacity);
     for (size_t i = 0; i < oldCapacity; ++i) {
         Node<K,V>* crawlNode = temp[i];
         while (crawlNode != nullptr) {
