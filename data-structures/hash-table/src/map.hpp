@@ -38,7 +38,7 @@ class HT::Map {
 
 template<typename Key_T, typename Value_T, class Hash>
 HT::Node<Key_T,Value_T>* HT::Map<Key_T,Value_T,Hash>::set(const Key_T& key, const Value_T& value) {
-    while (this->loadFactor() > 0.5f)
+    if (this->loadFactor() > 0.5f)
         this->resize(this->capacity*2);
     std::pair<HT::Node<Key_T,Value_T>*,HT::Node<Key_T,Value_T>*> nodesPair = this->find_with_previous(key);
     if (nodesPair.second == nullptr) {
@@ -70,11 +70,17 @@ Value_T HT::Map<Key_T,Value_T,Hash>::erase(const Key_T& key) {
         throw std::out_of_range("HT::Map::erase | could not erase from key");
     HT::Node<Key_T,Value_T>* temp = nodesPair.second;
     Value_T returnedValue = temp->value;
-    if (nodesPair.first == nullptr)
-        this->array[this->hashFunction(key)] = nodesPair.second->next;
-    else
+    if (nodesPair.first == nullptr) {
+        HT::Node<Key_T,Value_T>* nextNode = nodesPair.second->next;
+        this->array[this->hashFunction(key)] = nextNode;
+        if (nextNode == nullptr)
+            ++this->freeBuckets;
+    } else
         nodesPair.first->next = nodesPair.second->next;
+    --this->numberOfNodes;
     delete temp;
+    if (this->loadFactor() < 0.25f)
+        this->resize(this->capacity/2);
     return returnedValue;
 }
 

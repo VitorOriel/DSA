@@ -12,5 +12,9 @@ int main() {
         std::cout << e.what() << std::endl;
     }
     std::cout << "erase: " << map.erase("test2") << std::endl;
+    for (size_t i = 0; i < 100; ++i)
+        map[std::to_string(i)] = 1;
+    for (size_t i = 0; i < 100; ++i)
+        std::cout << map.erase(std::to_string(i)) << std::endl;
     return 0;
 }
