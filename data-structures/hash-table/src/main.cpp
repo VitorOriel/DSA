@@ -12,5 +12,7 @@ int main() {
         std::cout << e.what() << std::endl;
     }
     std::cout << "erase: " << map.erase("test2") << std::endl;
+    for (auto it : map)
+        std::cout << it->key << ' ' << it->value << std::endl;
     return 0;
 }
