@@ -10,7 +10,7 @@
 
 template<typename Key_T, typename Value_T>
 class HT::Node {
-    template<typename T, typename U, class Hash>
+    template<typename K, typename V, class Hash>
     friend class HT::Map;
     public:
         Node(const Key_T& key, const Value_T& value);
