@@ -12,6 +12,10 @@ int main() {
         std::cout << e.what() << std::endl;
     }
     std::cout << "erase: " << map.erase("test2") << std::endl;
+    for (int i = 0; i < 100; ++i) {
+        int k = i;
+        map.set(std::to_string(i), k);
+    }
     for (auto it : map)
         std::cout << it->key << ' ' << it->value << std::endl;
     return 0;

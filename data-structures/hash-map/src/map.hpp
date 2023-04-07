@@ -21,9 +21,9 @@ class HT::Map {
         Value_T erase(const Key_T& key);
         Value_T& operator[](const Key_T& key);
         class Iterator;
-        Iterator begin() noexcept { return Iterator(this->array, this->capacity); }
-        Iterator cbegin() const noexcept { return Iterator(this->array, this->capacity); }
-        Iterator end() noexcept { return Iterator(this->capacity); }
+        Iterator begin() noexcept { return Iterator(this->array); }
+        Iterator cbegin() const noexcept { return Iterator(this->array); }
+        Iterator end() noexcept { return Iterator(this->numberOfNodes); }
     private:
         void tableConstructor(size_t capacity);
         void tableDestructor(Node<Key_T,Value_T>** array, size_t capacity);
@@ -165,51 +165,48 @@ template<typename Key_T, typename Value_T, class Hash>
 class HT::Map<Key_T,Value_T,Hash>::Iterator : public std::iterator<std::forward_iterator_tag, HT::Node<Key_T,Value_T>*> {
     public:
         // HT::Map::begin()
-        Iterator(HT::Node<Key_T,Value_T>** array, size_t capacity);
+        Iterator(HT::Node<Key_T,Value_T>** mapArray);
         // HT::Map::end()
-        Iterator(size_t currentIndex);
-        Iterator& operator++() { this->moveToNextNode(); return *this; }
-        bool operator==(const Iterator& other) { return this->currentIndex == other.currentIndex && this->currentNode == other.currentNode; }
-        bool operator!=(const Iterator& other) { return this->currentIndex != other.currentIndex && this->currentNode != other.currentNode; }
+        Iterator(size_t currentNodeIndex);
+        Iterator& operator++() { this->moveToNextNode(); ++this->currentNodeIndex; return *this; }
+        Iterator operator++(int) { Iterator iterator = *this; ++*this; return iterator; }
+        bool operator==(const Iterator& other) { return this->currentNodeIndex == other.currentNodeIndex; }
+        bool operator!=(const Iterator& other) { return this->currentNodeIndex != other.currentNodeIndex; }
         HT::Node<Key_T,Value_T>* operator*() const { return this->currentNode; }
         HT::Node<Key_T,Value_T>* operator->() const { return this->currentNode; }
     private:
-        bool hasNext() noexcept { return this->currentIndex < this->mapCapacity; }
         void moveToNextNode();
 
         HT::Node<Key_T,Value_T>** mapArray;
-        size_t mapCapacity;
         HT::Node<Key_T,Value_T>* currentNode;
-        size_t currentIndex;
+        size_t currentMapIndex;
+        size_t currentNodeIndex;
 };
 
 template<typename Key_T, typename Value_T, class Hash>
-HT::Map<Key_T,Value_T,Hash>::Iterator::Iterator(HT::Node<Key_T,Value_T>** array, size_t capacity) {
-    this->mapArray = array;
-    this->mapCapacity = capacity;
-    this->currentIndex = 0;
+HT::Map<Key_T,Value_T,Hash>::Iterator::Iterator(HT::Node<Key_T,Value_T>** mapArray) {
+    this->mapArray = mapArray;
+    this->currentMapIndex = 0;
+    this->currentNodeIndex = 0;
     this->currentNode = this->mapArray[0];
     if (this->currentNode == nullptr)
         this->moveToNextNode();
 }
 
 template<typename Key_T, typename Value_T, class Hash>
-HT::Map<Key_T,Value_T,Hash>::Iterator::Iterator(size_t currentIndex) {
+HT::Map<Key_T,Value_T,Hash>::Iterator::Iterator(size_t currentNodeIndex) {
     this->mapArray = nullptr;
-    this->mapCapacity = currentIndex;
-    this->currentIndex = currentIndex;
+    this->currentMapIndex = 0;
+    this->currentNodeIndex = currentNodeIndex;
     this->currentNode = nullptr;
 }
 
 template<typename Key_T, typename Value_T, class Hash>
 void HT::Map<Key_T,Value_T,Hash>::Iterator::moveToNextNode() {
-    if (this->currentNode == nullptr) {
-        while (this->currentNode == nullptr && this->hasNext()) {
-            ++this->currentIndex;
-            this->currentNode = this->mapArray[this->currentIndex];
-        }
-    } else
+    if (this->currentNode != nullptr)
         this->currentNode = this->currentNode->next;
+    while (this->currentNode == nullptr)
+        this->currentNode = this->mapArray[++this->currentMapIndex];
 }
 
 #endif
