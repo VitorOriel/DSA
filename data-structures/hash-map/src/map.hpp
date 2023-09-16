@@ -31,7 +31,7 @@ class HT::Map {
         void resize(size_t newCapacity);
         size_t hashFunction(const Key_T& key) { return this->hash(key) % this->capacity; }
         HT::Node<Key_T,Value_T>* find(const Key_T& key);
-        std::pair<HT::Node<Key_T,Value_T>*,HT::Node<Key_T,Value_T>*> find_with_previous(const Key_T& key);
+        std::pair<HT::Node<Key_T,Value_T>*,HT::Node<Key_T,Value_T>*> findWithPrevious(const Key_T& key);
 
         size_t capacity;
         size_t numberOfNodes;
@@ -44,7 +44,7 @@ template<typename Key_T, typename Value_T, class Hash>
 HT::Node<Key_T,Value_T>* HT::Map<Key_T,Value_T,Hash>::set(const Key_T& key, const Value_T& value) {
     if (this->loadFactor() > 0.5f)
         this->resize(this->capacity*2);
-    std::pair<HT::Node<Key_T,Value_T>*,HT::Node<Key_T,Value_T>*> nodesPair = this->find_with_previous(key);
+    std::pair<HT::Node<Key_T,Value_T>*,HT::Node<Key_T,Value_T>*> nodesPair = this->findWithPrevious(key);
     if (nodesPair.second == nullptr) {
         HT::Node<Key_T,Value_T>* newNode = new HT::Node<Key_T,Value_T>(key, value);
         if (nodesPair.first == nullptr) {
@@ -69,7 +69,7 @@ Value_T& HT::Map<Key_T,Value_T,Hash>::get(const Key_T& key) {
 
 template<typename Key_T, typename Value_T, class Hash>
 Value_T HT::Map<Key_T,Value_T,Hash>::erase(const Key_T& key) {
-    std::pair<HT::Node<Key_T,Value_T>*,HT::Node<Key_T,Value_T>*> nodesPair = this->find_with_previous(key);
+    std::pair<HT::Node<Key_T,Value_T>*,HT::Node<Key_T,Value_T>*> nodesPair = this->findWithPrevious(key);
     if (nodesPair.second == nullptr)
         throw std::out_of_range("HT::Map::erase | could not erase from key");
     HT::Node<Key_T,Value_T>* temp = nodesPair.second;
@@ -109,7 +109,7 @@ HT::Node<Key_T,Value_T>* HT::Map<Key_T,Value_T,Hash>::find(const Key_T& key) {
 }
 
 template<typename Key_T, typename Value_T, class Hash>
-std::pair<HT::Node<Key_T,Value_T>*,HT::Node<Key_T,Value_T>*> HT::Map<Key_T,Value_T,Hash>::find_with_previous(const Key_T& key) {
+std::pair<HT::Node<Key_T,Value_T>*,HT::Node<Key_T,Value_T>*> HT::Map<Key_T,Value_T,Hash>::findWithPrevious(const Key_T& key) {
     size_t keyHash = this->hash(key);
     HT::Node<Key_T,Value_T>* crawlNode = this->array[this->hashFunction(key)];
     HT::Node<Key_T,Value_T>* previousNode = nullptr;
