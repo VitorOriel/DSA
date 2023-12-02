@@ -21,8 +21,8 @@ class HT::Map {
         Value_T erase(const Key_T& key);
         Value_T& operator[](const Key_T& key);
         class Iterator;
-        Iterator begin() noexcept { return Iterator(this->array); }
-        Iterator cbegin() const noexcept { return Iterator(this->array); }
+        Iterator begin() noexcept { return Iterator(this->array, this->capacity); }
+        Iterator cbegin() const noexcept { return Iterator(this->array, this->capacity); }
         Iterator end() noexcept { return Iterator(this->numberOfNodes); }
     private:
         void tableConstructor(size_t capacity);
@@ -165,7 +165,7 @@ template<typename Key_T, typename Value_T, class Hash>
 class HT::Map<Key_T,Value_T,Hash>::Iterator : public std::iterator<std::forward_iterator_tag, HT::Node<Key_T,Value_T>*> {
     public:
         // HT::Map::begin()
-        Iterator(HT::Node<Key_T,Value_T>** mapArray);
+        Iterator(HT::Node<Key_T,Value_T>** mapArray, size_t mapCapacity);
         // HT::Map::end()
         Iterator(size_t currentNodeIndex);
         Iterator& operator++() { this->moveToNextNode(); ++this->currentNodeIndex; return *this; }
@@ -178,14 +178,16 @@ class HT::Map<Key_T,Value_T,Hash>::Iterator : public std::iterator<std::forward_
         void moveToNextNode();
 
         HT::Node<Key_T,Value_T>** mapArray;
+        size_t mapCapacity;
         HT::Node<Key_T,Value_T>* currentNode;
         size_t currentMapIndex;
         size_t currentNodeIndex;
 };
 
 template<typename Key_T, typename Value_T, class Hash>
-HT::Map<Key_T,Value_T,Hash>::Iterator::Iterator(HT::Node<Key_T,Value_T>** mapArray) {
+HT::Map<Key_T,Value_T,Hash>::Iterator::Iterator(HT::Node<Key_T,Value_T>** mapArray, size_t mapCapacity) {
     this->mapArray = mapArray;
+    this->mapCapacity = mapCapacity;
     this->currentMapIndex = 0;
     this->currentNodeIndex = 0;
     this->currentNode = this->mapArray[0];
@@ -205,7 +207,7 @@ template<typename Key_T, typename Value_T, class Hash>
 void HT::Map<Key_T,Value_T,Hash>::Iterator::moveToNextNode() {
     if (this->currentNode != nullptr)
         this->currentNode = this->currentNode->next;
-    while (this->currentNode == nullptr)
+    while (this->currentNode == nullptr && this->currentMapIndex < this->mapCapacity-1)
         this->currentNode = this->mapArray[++this->currentMapIndex];
 }
 
