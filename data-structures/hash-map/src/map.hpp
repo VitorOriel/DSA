@@ -198,6 +198,7 @@ HT::Map<Key_T,Value_T,Hash>::Iterator::Iterator(HT::Node<Key_T,Value_T>** mapArr
 template<typename Key_T, typename Value_T, class Hash>
 HT::Map<Key_T,Value_T,Hash>::Iterator::Iterator(size_t currentNodeIndex) {
     this->mapArray = nullptr;
+    this->mapCapacity = 0;
     this->currentMapIndex = 0;
     this->currentNodeIndex = currentNodeIndex;
     this->currentNode = nullptr;
