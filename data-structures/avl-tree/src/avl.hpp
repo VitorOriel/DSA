@@ -32,9 +32,9 @@ class avl::AVLTree {
         avl::Node<T>* min(avl::Node<T>* subTreeRoot);
         avl::Node<T>* max(avl::Node<T>* subTreeRoot);
         avl::Node<T>* balance(avl::Node<T>* node);
-        int getHeight(avl::Node<T>* node) const;
+        size_t getHeight(avl::Node<T>* node) const;
         inline void updateHeight(avl::Node<T>* node) { node->height = 1 + std::max(this->getHeight(node->left), this->getHeight(node->right)); }
-        inline int balanceFactor(avl::Node<T>* node) { return this->getHeight(node->left) - this->getHeight(node->right); }
+        inline int balanceFactor(avl::Node<T>* node) { return static_cast<int>(this->getHeight(node->left)) - static_cast<int>(this->getHeight(node->right)); }
         avl::Node<T>* rotateLeft(avl::Node<T>* node);
         avl::Node<T>* rotateRight(avl::Node<T>* node);
         avl::Node<T>* root;
@@ -192,10 +192,10 @@ avl::Node<T>* avl::AVLTree<T>::balance(avl::Node<T>* node) {
 }
 
 template<typename T>
-int avl::AVLTree<T>::getHeight(avl::Node<T>* node) const {
+size_t avl::AVLTree<T>::getHeight(avl::Node<T>* node) const {
     if (node == nullptr)
         return 0;
-    return static_cast<int>(node->height);
+    return node->height;
 }
 
 template<typename T>
