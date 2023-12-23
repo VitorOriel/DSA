@@ -3,24 +3,23 @@
 
 using namespace std;
 
-void printTree(avl::AVLTree<int>* tree) {
-    for (avl::InorderIterator<int> it = tree->begin(); it.hasNext();)
+void printTree(avl::AVLTree<int>& tree) {
+    for (avl::InorderIterator<int> it = tree.begin(); it.hasNext();)
         cout << it.next() << ' ';
     cout << endl;
 }
 
 int main() {
-    avl::AVLTree<int>* bst = new avl::AVLTree<int>();
-    bst->insert(3);
-    bst->insert(1);
-    bst->insert(2);
-    bst->insert(4);
-    bst->insert(8);
-    bst->insert(7);
-    bst->insert(0);
-    printTree(bst);
-    bst->remove(3);
-    printTree(bst);
-    delete bst;
+    avl::AVLTree<int> tree;
+    tree.insert(3);
+    tree.insert(1);
+    tree.insert(2);
+    tree.insert(4);
+    tree.insert(8);
+    tree.insert(7);
+    tree.insert(0);
+    printTree(tree);
+    tree.remove(3);
+    printTree(tree);
     return 0;
 }

@@ -20,6 +20,7 @@ class avl::Node {
         ~Node();
     private:
         T data;
+        size_t height;
         Node* left;
         Node* right;
         Node* parent;
@@ -31,6 +32,7 @@ avl::Node<T>::Node(const T& data) {
     this->right = nullptr;
     this->parent = nullptr;
     this->data = data;
+    this->height = 1;
 }
 
 template<typename T>

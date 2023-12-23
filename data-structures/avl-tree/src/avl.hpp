@@ -31,6 +31,11 @@ class avl::AVLTree {
         void transplant(avl::Node<T>* old, avl::Node<T>* new_);
         avl::Node<T>* min(avl::Node<T>* subTreeRoot);
         avl::Node<T>* max(avl::Node<T>* subTreeRoot);
+        size_t getHeight(avl::Node<T>* node) const;
+        inline void updateHeight(avl::Node<T>* node) { node->height = 1 + std::max(this->getHeight(node->left), this->getHeight(node->right)); }
+        inline size_t balanceFactor(avl::Node<T>* node) { return this->getHeight(node->left) - this->getHeight(node->right); }
+        avl::Node<T>* rotateLeft(avl::Node<T>* node);
+        avl::Node<T>* rotateRight(avl::Node<T>* node);
         avl::Node<T>* root;
 };
 
@@ -155,6 +160,55 @@ avl::Node<T>* avl::AVLTree<T>::max(avl::Node<T>* subTreeRoot) {
     while (subTreeRoot->right != nullptr)
         subTreeRoot = subTreeRoot->right;
     return subTreeRoot;
+}
+
+template<typename T>
+size_t avl::AVLTree<T>::getHeight(avl::Node<T>* node) const {
+    if (node == nullptr)
+        return 0;
+    return node->height;
+}
+
+template<typename T>
+avl::Node<T>* avl::AVLTree<T>::rotateLeft(avl::Node<T>* node) {
+    avl::Node<T>* rightChildren = node->right;
+    avl::Node<T>* rightChildrenLeft = rightChildren->left;
+    node->right = rightChildren->left;
+    rightChildren->left = node;
+    this->updateHeight(node);
+    this->updateHeight(rightChildren);
+    if (node->parent != nullptr) {
+        if (node == node->parent->left)
+            node->parent->left = rightChildren;
+        else
+            node->parent->right = rightChildren;
+    }
+    rightChildren->parent = node->parent;
+    node->parent = rightChildren;
+    if (rightChildrenLeft != nullptr)
+        rightChildrenLeft->parent = node;
+    return rightChildren;
+}
+
+template<typename T>
+avl::Node<T>* avl::AVLTree<T>::rotateRight(avl::Node<T>* node) {
+    avl::Node<T>* leftChildren = node->left;
+    avl::Node<T>* leftChildrenRight = leftChildren->right;
+    node->left = leftChildren->right;
+    leftChildren->right = node;
+    this->updateHeight(node);
+    this->updateHeight(leftChildren);
+    if (node->parent != nullptr) {
+        if (node == node->parent->left)
+            node->parent->left = leftChildren;
+        else
+            node->parent->right = leftChildren;
+    }
+    leftChildren->parent = node->parent;
+    node->parent = leftChildren;
+    if (leftChildrenRight != nullptr)
+        leftChildrenRight->parent = node;
+    return leftChildren;
 }
 
 #endif
