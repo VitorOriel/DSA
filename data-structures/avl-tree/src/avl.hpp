@@ -6,8 +6,6 @@
 #ifndef AVL_TREE_HPP
 #define AVL_TREE_HPP
 
-#include <string>
-
 #include "namespace.hpp"
 #include "node.hpp"
 #include "iterator.hpp"
