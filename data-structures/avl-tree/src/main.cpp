@@ -20,6 +20,19 @@ int main() {
     tree.insert(0);
     printTree(tree);
     tree.remove(3);
+    tree.remove(1);
+    tree.remove(4);
+    tree.insert(10);
+    tree.insert(1);
+    tree.insert(3);
+    printTree(tree);
+    tree.insert(15);
+    tree.insert(14);
+    tree.insert(13);
+    printTree(tree);
+    tree.remove(0);
+    tree.remove(2);
+    tree.remove(3);
     printTree(tree);
     return 0;
 }

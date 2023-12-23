@@ -31,9 +31,10 @@ class avl::AVLTree {
         void transplant(avl::Node<T>* old, avl::Node<T>* new_);
         avl::Node<T>* min(avl::Node<T>* subTreeRoot);
         avl::Node<T>* max(avl::Node<T>* subTreeRoot);
-        size_t getHeight(avl::Node<T>* node) const;
+        avl::Node<T>* balance(avl::Node<T>* node);
+        int getHeight(avl::Node<T>* node) const;
         inline void updateHeight(avl::Node<T>* node) { node->height = 1 + std::max(this->getHeight(node->left), this->getHeight(node->right)); }
-        inline size_t balanceFactor(avl::Node<T>* node) { return this->getHeight(node->left) - this->getHeight(node->right); }
+        inline int balanceFactor(avl::Node<T>* node) { return this->getHeight(node->left) - this->getHeight(node->right); }
         avl::Node<T>* rotateLeft(avl::Node<T>* node);
         avl::Node<T>* rotateRight(avl::Node<T>* node);
         avl::Node<T>* root;
@@ -58,6 +59,7 @@ void avl::AVLTree<T>::remove(const T& data) {
     if (removedNode == nullptr)
         throw NotFoundException("Item not found when removing");
     else {
+        avl::Node<T>* parent = removedNode->parent;
         if (removedNode->left == nullptr)
             this->transplant(removedNode, removedNode->right);
         else if (removedNode->right == nullptr)
@@ -74,6 +76,10 @@ void avl::AVLTree<T>::remove(const T& data) {
             successor->left->parent = successor;
         }
         delete removedNode;
+        while (parent != nullptr) {
+            this->balance(parent);
+            parent = parent->parent;
+        }
     }
 }
 
@@ -119,7 +125,7 @@ avl::Node<T>* avl::AVLTree<T>::insert(avl::Node<T>* node, const T& data) {
             node->right->parent = node;
         }
     }
-    return node;
+    return this->balance(node);
 }
 
 template<typename T>
@@ -163,10 +169,33 @@ avl::Node<T>* avl::AVLTree<T>::max(avl::Node<T>* subTreeRoot) {
 }
 
 template<typename T>
-size_t avl::AVLTree<T>::getHeight(avl::Node<T>* node) const {
+avl::Node<T>* avl::AVLTree<T>::balance(avl::Node<T>* node) {
+    this->updateHeight(node);
+    int bal = this->balanceFactor(node);
+    if (bal > 1) {
+        if (this->getHeight(node->left->left) >= this->getHeight(node->left->right))
+            return this->rotateRight(node);
+        else {
+            node->left = this->rotateLeft(node->left);
+            return this->rotateRight(node);
+        }
+    }
+    if (bal < -1) {
+        if (this->getHeight(node->right->right) >= this->getHeight(node->right->left))
+            return this->rotateLeft(node);
+        else {
+            node->right = this->rotateRight(node->right);
+            return this->rotateLeft(node);
+        }
+    }
+    return node;
+}
+
+template<typename T>
+int avl::AVLTree<T>::getHeight(avl::Node<T>* node) const {
     if (node == nullptr)
         return 0;
-    return node->height;
+    return static_cast<int>(node->height);
 }
 
 template<typename T>
@@ -177,13 +206,7 @@ avl::Node<T>* avl::AVLTree<T>::rotateLeft(avl::Node<T>* node) {
     rightChildren->left = node;
     this->updateHeight(node);
     this->updateHeight(rightChildren);
-    if (node->parent != nullptr) {
-        if (node == node->parent->left)
-            node->parent->left = rightChildren;
-        else
-            node->parent->right = rightChildren;
-    }
-    rightChildren->parent = node->parent;
+    this->transplant(node, rightChildren);
     node->parent = rightChildren;
     if (rightChildrenLeft != nullptr)
         rightChildrenLeft->parent = node;
@@ -198,13 +221,7 @@ avl::Node<T>* avl::AVLTree<T>::rotateRight(avl::Node<T>* node) {
     leftChildren->right = node;
     this->updateHeight(node);
     this->updateHeight(leftChildren);
-    if (node->parent != nullptr) {
-        if (node == node->parent->left)
-            node->parent->left = leftChildren;
-        else
-            node->parent->right = leftChildren;
-    }
-    leftChildren->parent = node->parent;
+    this->transplant(node, leftChildren);
     node->parent = leftChildren;
     if (leftChildrenRight != nullptr)
         leftChildrenRight->parent = node;
