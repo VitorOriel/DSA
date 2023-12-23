@@ -6,8 +6,6 @@
 #ifndef BASE_DATA_HPP
 #define BASE_DATA_HPP
 
-#include <concepts>
-
 #include "namespace.hpp"
 
 // Must override at least both operator< and operator== methods
