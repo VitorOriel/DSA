@@ -19,7 +19,7 @@ class avl::AVLTree {
         AVLTree() { this->root = nullptr; }
         ~AVLTree() { this->destroyRecursive(this->root); }
         void insert(const T& data);
-        int search(const T& data);
+        T& search(const T& data);
         void remove(const T& data);
         int min();
         int max();
@@ -46,7 +46,7 @@ void avl::AVLTree<T>::insert(const T& data) {
 }
 
 template<typename T>
-int avl::AVLTree<T>::search(const T& data) {
+T& avl::AVLTree<T>::search(const T& data) {
     avl::Node<T>* searchedNode = this->searchNode(data);
     if (searchedNode == nullptr)
         throw NotFoundException("Item not found when searching");
