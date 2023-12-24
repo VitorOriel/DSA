@@ -114,14 +114,12 @@ template<typename T>
 avl::Node<T>* avl::AVLTree<T>::insert(avl::Node<T>* node, const T& data) {
     if (node == nullptr)
         return new avl::Node<T>(data);
-    else {
-        if (data < node->data) {
-            node->left = this->insert(node->left, data);
-            node->left->parent = node;
-        } else {
-            node->right = this->insert(node->right, data);
-            node->right->parent = node;
-        }
+    if (data < node->data) {
+        node->left = this->insert(node->left, data);
+        node->left->parent = node;
+    } else {
+        node->right = this->insert(node->right, data);
+        node->right->parent = node;
     }
     return this->balance(node);
 }
