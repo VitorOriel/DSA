@@ -171,7 +171,7 @@ avl::Node<T>* avl::AVLTree<T>::balance(avl::Node<T>* node) {
     this->updateHeight(node);
     int bal = this->balanceFactor(node);
     if (bal > 1) {
-        if (this->getHeight(node->left->left) >= this->getHeight(node->left->right))
+        if (this->balanceFactor(node->left) >= 0)
             return this->rotateRight(node);
         else {
             node->left = this->rotateLeft(node->left);
@@ -179,7 +179,7 @@ avl::Node<T>* avl::AVLTree<T>::balance(avl::Node<T>* node) {
         }
     }
     if (bal < -1) {
-        if (this->getHeight(node->right->right) >= this->getHeight(node->right->left))
+        if (this->balanceFactor(node->right) <= 0)
             return this->rotateLeft(node);
         else {
             node->right = this->rotateRight(node->right);
