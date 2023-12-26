@@ -1,9 +1,11 @@
-# Double Linked List
+# Doubly Linked List
+
+A doubly linked list is a data structure in which each node contains a data element and two pointers, one pointing to the next node in the sequence and another pointing to the previous node. This bidirectional linkage allows for easy traversal in both forward and backward directions
 
 ## Time complexity
-| Operation | Best case | Worst case |
-| :---: | :---: | :---: |
-| insert | O(1) | O(n) |
-| search | O(n) | O(n) |
-| update | O(n) | O(n) |
-| delete | O(1) | O(n) |
+| Operation | Big-O |
+| :---: | :---: |
+| insert | O(1) |
+| search | O(n) |
+| delete | O(n) |
+| traversal | O(n) |

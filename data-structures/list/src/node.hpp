@@ -12,7 +12,7 @@ class Node {
     friend class List;
 
     public:
-        Node(T item);
+        Node(const T& item);
         ~Node();
     private:
         T data;
@@ -21,7 +21,7 @@ class Node {
 };
 
 template<typename T>
-Node<T>::Node(T item) {
+Node<T>::Node(const T& item) {
     this->previous = nullptr;
     this->next = nullptr;
     this->data = item;

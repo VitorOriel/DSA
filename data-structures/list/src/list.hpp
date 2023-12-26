@@ -15,8 +15,8 @@ class List {
         List() { this->_List(); }
         List(const List<T>& other);
         ~List();
-        void append(T item);
-        void remove(T item);
+        void append(const T& item);
+        void remove(const T& item);
         T& operator[](size_t index);
         T operator[](size_t index) const { return *this[index]; }
         class Iterator;
@@ -36,7 +36,7 @@ class List<T>::Iterator : public std::iterator<std::bidirectional_iterator_tag, 
     public:
         Iterator() noexcept : it_pCurrentNode(this->head) { }
         Iterator(const Node<T>* pNode) noexcept : it_pCurrentNode(pNode) { }
-        Iterator& operator=(T item) {
+        Iterator& operator=(const T& item) {
             this->it_pCurrentNode->data = item;
             return *this;
         }
@@ -101,7 +101,7 @@ List<T>::~List() {
 }
 
 template<typename T>
-void List<T>::append(T item) {
+void List<T>::append(const T& item) {
     Node<T>* newNode = new Node<T>(item);
     if (this->head == nullptr)
         this->head = newNode;
@@ -114,7 +114,7 @@ void List<T>::append(T item) {
 }
 
 template<typename T>
-void List<T>::remove(T item) {
+void List<T>::remove(const T& item) {
     Node<T>* foundNode = nullptr;
     Node<T>* crawlNode = this->head;
     while (foundNode == nullptr && crawlNode != nullptr) {
