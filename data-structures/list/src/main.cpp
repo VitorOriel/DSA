@@ -25,5 +25,7 @@ int main() {
     printList(list);
     cout << "Printing list 2" << endl;
     printList(list2);
+    if (list.contains(0))
+        cout << "List contains zero!" << endl;
     return 0;
 }

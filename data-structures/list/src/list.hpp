@@ -15,10 +15,10 @@ class List {
         List() { this->_List(); }
         List(const List<T>& other);
         ~List();
-        void append(const T& item);
-        void remove(const T& item);
+        void append(const T& data);
+        void remove(const T& data);
+        inline bool contains(const T& data) { return this->search(data) != nullptr; }
         T& operator[](size_t index);
-        T operator[](size_t index) const { return *this[index]; }
         class Iterator;
         Iterator begin() noexcept { return Iterator(this->head); }
         Iterator cbegin() const noexcept { return Iterator(this->head); }
@@ -26,6 +26,7 @@ class List {
         Iterator end() noexcept { return Iterator(nullptr); }
     private:
         void _List(); // Base args constructor
+        Node<T>* search(const T& data);
         Node<T>* head;
         Node<T>* tail;
         size_t size;
@@ -36,8 +37,8 @@ class List<T>::Iterator : public std::iterator<std::bidirectional_iterator_tag, 
     public:
         Iterator() noexcept : it_pCurrentNode(this->head) { }
         Iterator(const Node<T>* pNode) noexcept : it_pCurrentNode(pNode) { }
-        Iterator& operator=(const T& item) {
-            this->it_pCurrentNode->data = item;
+        Iterator& operator=(const T& data) {
+            this->it_pCurrentNode->data = data;
             return *this;
         }
         Iterator& operator++() {
@@ -101,8 +102,8 @@ List<T>::~List() {
 }
 
 template<typename T>
-void List<T>::append(const T& item) {
-    Node<T>* newNode = new Node<T>(item);
+void List<T>::append(const T& data) {
+    Node<T>* newNode = new Node<T>(data);
     if (this->head == nullptr)
         this->head = newNode;
     else {
@@ -114,24 +115,18 @@ void List<T>::append(const T& item) {
 }
 
 template<typename T>
-void List<T>::remove(const T& item) {
-    Node<T>* foundNode = nullptr;
-    Node<T>* crawlNode = this->head;
-    while (foundNode == nullptr && crawlNode != nullptr) {
-        if (item == crawlNode->data)
-            foundNode = crawlNode;
-        crawlNode = crawlNode->next;
-    }
-    if (foundNode != nullptr) {
-        if (foundNode == this->head)
+void List<T>::remove(const T& data) {
+    Node<T>* searchedNode = this->search(data);
+    if (searchedNode != nullptr) {
+        if (searchedNode == this->head)
             this->head = this->head->next;
-        if (foundNode == this->tail)
+        if (searchedNode == this->tail)
             this->tail = this->tail->previous;
-        if (foundNode->next != nullptr)
-            foundNode->next->previous = foundNode->previous;
-        if (foundNode->previous != nullptr)
-            foundNode->previous->next = foundNode->next;
-        delete foundNode;
+        if (searchedNode->next != nullptr)
+            searchedNode->next->previous = searchedNode->previous;
+        if (searchedNode->previous != nullptr)
+            searchedNode->previous->next = searchedNode->next;
+        delete searchedNode;
         this->size -= 1;
     }
 }
@@ -147,6 +142,17 @@ T& List<T>::operator[](size_t index) {
         }
     }
     throw std::out_of_range("Index out of range");
+}
+
+template<typename T>
+Node<T>* List<T>::search(const T& data) {
+    Node<T>* crawlNode = this->head;
+    while (crawlNode != nullptr) {
+        if (data == crawlNode->data)
+            return crawlNode;
+        crawlNode = crawlNode->next;
+    }
+    return nullptr;
 }
 
 #endif
