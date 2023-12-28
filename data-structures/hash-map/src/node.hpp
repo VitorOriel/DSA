@@ -9,9 +9,9 @@
 #include "namespace.hpp"
 
 template<typename Key_T, typename Value_T>
-class HT::Node {
+class ht::Node {
     template<typename K, typename V, class Hash>
-    friend class HT::Map;
+    friend class ht::Map;
     public:
         Node(const Key_T& key, const Value_T& value);
         ~Node() { }
@@ -22,7 +22,7 @@ class HT::Node {
 };
 
 template<typename Key_T, typename Value_T>
-HT::Node<Key_T,Value_T>::Node(const Key_T& key, const Value_T& value) {
+ht::Node<Key_T,Value_T>::Node(const Key_T& key, const Value_T& value) {
     this->key = key;
     this->value = value;
     this->next = nullptr;

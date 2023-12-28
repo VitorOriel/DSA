@@ -2,7 +2,7 @@
 #include "map.hpp"
 
 int main() {
-    HT::Map<std::string,int> map;
+    ht::Map<std::string,int> map;
     map["test"] = 15;
     map["test2"] = map["test"];
     std::cout << map["test2"] << std::endl;
