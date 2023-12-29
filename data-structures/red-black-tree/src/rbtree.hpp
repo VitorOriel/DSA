@@ -17,7 +17,7 @@ class rb::RBTree {
         RBTree() { this->root = nullptr; }
         ~RBTree() { this->destroyRecursive(this->root); }
         void insert(const T& data);
-        T& search(const T& data);
+        T search(const T& data);
         void remove(const T& data);
         T& min();
         T& max();
@@ -46,7 +46,7 @@ void rb::RBTree<T>::insert(const T& data) {
 }
 
 template<typename T>
-T& rb::RBTree<T>::search(const T& data) {
+T rb::RBTree<T>::search(const T& data) {
     rb::Node<T>* searchedNode = this->searchNode(data);
     if (searchedNode == nullptr)
         throw NotFoundException("Item not found when searching");
