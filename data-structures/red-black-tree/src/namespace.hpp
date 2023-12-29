@@ -13,7 +13,7 @@ namespace rb {
     template<typename T>
     class InorderIterator;
     template<typename T>
-    class RedBlackTree;
+    class RBTree;
     enum Color { RED, BLACK };
 };
 

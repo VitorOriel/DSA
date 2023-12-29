@@ -12,10 +12,10 @@
 #include "exceptions.hpp"
 
 template<typename T = rb::BaseData>
-class rb::RedBlackTree {
+class rb::RBTree {
     public:
-        RedBlackTree() { this->root = nullptr; }
-        ~RedBlackTree() { this->destroyRecursive(this->root); }
+        RBTree() { this->root = nullptr; }
+        ~RBTree() { this->destroyRecursive(this->root); }
         void insert(const T& data);
         T& search(const T& data);
         void remove(const T& data);
@@ -24,27 +24,29 @@ class rb::RedBlackTree {
         rb::InorderIterator<T> begin() { return rb::InorderIterator<T>(this->root); }
     private:
         void destroyRecursive(rb::Node<T>* node);
-        rb::Node<T>* insert(rb::Node<T>* node, const T& data);
+        void insert(rb::Node<T>*& root, rb::Node<T>* parent, const T& data);
         rb::Node<T>* searchNode(const T& data);
         void transplant(rb::Node<T>* old, rb::Node<T>* new_);
         rb::Node<T>* min(rb::Node<T>* subTreeRoot);
         rb::Node<T>* max(rb::Node<T>* subTreeRoot);
-        rb::Node<T>* balance(rb::Node<T>* node);
-        size_t getHeight(rb::Node<T>* node) const;
-        inline void updateHeight(rb::Node<T>* node) { node->height = 1 + std::max(this->getHeight(node->left), this->getHeight(node->right)); }
-        inline int balanceFactor(rb::Node<T>* node) { return static_cast<int>(this->getHeight(node->left)) - static_cast<int>(this->getHeight(node->right)); }
-        rb::Node<T>* rotateLeft(rb::Node<T>* node);
-        rb::Node<T>* rotateRight(rb::Node<T>* node);
+        void insertFixup(rb::Node<T>* node);
+        rb::Node<T>* insertFixupForRightUncle(rb::Node<T>* node);
+        rb::Node<T>* insertFixupForLeftUncle(rb::Node<T>* node);
+        void removeFixup(rb::Node<T>* node);
+        rb::Node<T>* removeFixupForRightBrother(rb::Node<T>* node);
+        rb::Node<T>* removeFixupForLeftBrother(rb::Node<T>* node);
+        void rotateLeft(rb::Node<T>* node);
+        void rotateRight(rb::Node<T>* node);
         rb::Node<T>* root;
 };
 
 template<typename T>
-void rb::RedBlackTree<T>::insert(const T& data) {
-    this->root = this->insert(this->root, data);
+void rb::RBTree<T>::insert(const T& data) {
+    this->insert(this->root, nullptr, data);
 }
 
 template<typename T>
-T& rb::RedBlackTree<T>::search(const T& data) {
+T& rb::RBTree<T>::search(const T& data) {
     rb::Node<T>* searchedNode = this->searchNode(data);
     if (searchedNode == nullptr)
         throw NotFoundException("Item not found when searching");
@@ -52,18 +54,23 @@ T& rb::RedBlackTree<T>::search(const T& data) {
 }
 
 template<typename T>
-void rb::RedBlackTree<T>::remove(const T& data) {
+void rb::RBTree<T>::remove(const T& data) {
     rb::Node<T>* removedNode = this->searchNode(data);
     if (removedNode == nullptr)
         throw NotFoundException("Item not found when removing");
     else {
-        rb::Node<T>* parent = removedNode->parent;
-        if (removedNode->left == nullptr)
+        rb::Color fixColor = removedNode->color;
+        rb::Node<T>* fixWhere;
+        if (removedNode->left == nullptr) {
+            fixWhere = removedNode->right;
             this->transplant(removedNode, removedNode->right);
-        else if (removedNode->right == nullptr)
+        } else if (removedNode->right == nullptr) {
+            fixWhere = removedNode->left;
             this->transplant(removedNode, removedNode->left);
-        else {
+        } else {
             rb::Node<T>* successor = this->min(removedNode->right);
+            fixColor = successor->color;
+            fixWhere = successor->right;
             if (successor->parent != removedNode) {
                 this->transplant(successor, successor->right);
                 successor->right = removedNode->right;
@@ -72,17 +79,16 @@ void rb::RedBlackTree<T>::remove(const T& data) {
             this->transplant(removedNode, successor);
             successor->left = removedNode->left;
             successor->left->parent = successor;
+            successor->color = removedNode->color;
         }
         delete removedNode;
-        while (parent != nullptr) {
-            this->balance(parent);
-            parent = parent->parent;
-        }
+        if (fixColor == rb::BLACK && fixWhere != nullptr)
+            removeFixup(fixWhere);
     }
 }
 
 template<typename T>
-T& rb::RedBlackTree<T>::min() {
+T& rb::RBTree<T>::min() {
     if (this->root == nullptr)
         throw EmptyTreeException("Can't get min from an empty tree");
     else {
@@ -92,7 +98,7 @@ T& rb::RedBlackTree<T>::min() {
 }
 
 template<typename T>
-T& rb::RedBlackTree<T>::max() {
+T& rb::RBTree<T>::max() {
     if (this->root == nullptr)
         throw EmptyTreeException("Can't get max from an empty tree");
     else {
@@ -102,7 +108,7 @@ T& rb::RedBlackTree<T>::max() {
 }
 
 template<typename T>
-void rb::RedBlackTree<T>::destroyRecursive(rb::Node<T>* node) {
+void rb::RBTree<T>::destroyRecursive(rb::Node<T>* node) {
     if (node != nullptr) {
         this->destroyRecursive(node->left);
         this->destroyRecursive(node->right);
@@ -111,21 +117,20 @@ void rb::RedBlackTree<T>::destroyRecursive(rb::Node<T>* node) {
 }
 
 template<typename T>
-rb::Node<T>* rb::RedBlackTree<T>::insert(rb::Node<T>* node, const T& data) {
-    if (node == nullptr)
-        return new rb::Node<T>(data);
-    if (data < node->data) {
-        node->left = this->insert(node->left, data);
-        node->left->parent = node;
+void rb::RBTree<T>::insert(rb::Node<T>*& root, rb::Node<T>* parent, const T& data) {
+    if (root == nullptr) {
+        root = new rb::Node<T>(data);
+        root->parent = parent;
+        this->insertFixup(root);
+    } else if (data < root->data) {
+        this->insert(root->left, root, data);
     } else {
-        node->right = this->insert(node->right, data);
-        node->right->parent = node;
+        this->insert(root->right, root, data);
     }
-    return this->balance(node);
 }
 
 template<typename T>
-rb::Node<T>* rb::RedBlackTree<T>::searchNode(const T& data) {
+rb::Node<T>* rb::RBTree<T>::searchNode(const T& data) {
     rb::Node<T>* crawlNode = this->root;
     while (crawlNode != nullptr) {
         if (crawlNode->data == data)
@@ -139,7 +144,7 @@ rb::Node<T>* rb::RedBlackTree<T>::searchNode(const T& data) {
 }
 
 template<typename T>
-void rb::RedBlackTree<T>::transplant(rb::Node<T>* old, rb::Node<T>* new_) {
+void rb::RBTree<T>::transplant(rb::Node<T>* old, rb::Node<T>* new_) {
     if (old == this->root)
         this->root = new_;
     else if (old == old->parent->left)
@@ -151,77 +156,169 @@ void rb::RedBlackTree<T>::transplant(rb::Node<T>* old, rb::Node<T>* new_) {
 }
 
 template<typename T>
-rb::Node<T>* rb::RedBlackTree<T>::min(rb::Node<T>* subTreeRoot) {
+rb::Node<T>* rb::RBTree<T>::min(rb::Node<T>* subTreeRoot) {
     while (subTreeRoot->left != nullptr)
         subTreeRoot = subTreeRoot->left;
     return subTreeRoot;
 }
 
 template<typename T>
-rb::Node<T>* rb::RedBlackTree<T>::max(rb::Node<T>* subTreeRoot) {
+rb::Node<T>* rb::RBTree<T>::max(rb::Node<T>* subTreeRoot) {
     while (subTreeRoot->right != nullptr)
         subTreeRoot = subTreeRoot->right;
     return subTreeRoot;
 }
 
 template<typename T>
-rb::Node<T>* rb::RedBlackTree<T>::balance(rb::Node<T>* node) {
-    this->updateHeight(node);
-    int bal = this->balanceFactor(node);
-    if (bal > 1) {
-        if (this->balanceFactor(node->left) >= 0)
-            return this->rotateRight(node);
-        else {
-            node->left = this->rotateLeft(node->left);
-            return this->rotateRight(node);
+void rb::RBTree<T>::insertFixup(rb::Node<T>* node) {
+    while (node->parent != nullptr && node->parent->color == rb::RED) {
+        if (node->parent == node->parent->parent->left) {
+            node = this->insertFixupForRightUncle(node);
+        } else {
+            node = this->insertFixupForLeftUncle(node);
         }
     }
-    if (bal < -1) {
-        if (this->balanceFactor(node->right) <= 0)
-            return this->rotateLeft(node);
-        else {
-            node->right = this->rotateRight(node->right);
-            return this->rotateLeft(node);
+    this->root->color = rb::BLACK;
+}
+
+template<typename T>
+rb::Node<T>* rb::RBTree<T>::insertFixupForRightUncle(rb::Node<T>* node) {
+    rb::Node<T>* rightUncle = node->parent->parent->right;
+    if (rightUncle != nullptr && rightUncle->color == rb::RED) {
+        node->parent->color = rb::BLACK;
+        rightUncle->color = rb::BLACK;
+        node->parent->parent->color = rb::RED;
+        node = node->parent->parent;
+    } else {
+        if (node == node->parent->right) {
+            node = node->parent;
+            this->rotateLeft(node);
         }
+        node->parent->color = rb::BLACK;
+        node->parent->parent->color = rb::RED;
+        this->rotateRight(node->parent->parent);
     }
     return node;
 }
 
 template<typename T>
-size_t rb::RedBlackTree<T>::getHeight(rb::Node<T>* node) const {
-    if (node == nullptr)
-        return 0;
-    return node->height;
+rb::Node<T>* rb::RBTree<T>::insertFixupForLeftUncle(rb::Node<T>* node) {
+    rb::Node<T>* leftUncle = node->parent->parent->left;
+    if (leftUncle != nullptr && leftUncle->color == rb::RED) {
+        node->parent->color = rb::BLACK;
+        leftUncle->color = rb::BLACK;
+        node->parent->parent->color = rb::RED;
+        node = node->parent->parent;
+    } else {
+        if (node == node->parent->left) {
+            node = node->parent;
+            this->rotateRight(node);
+        }
+        node->parent->color = rb::BLACK;
+        node->parent->parent->color = rb::RED;
+        this->rotateLeft(node->parent->parent);
+    }
+    return node;
 }
 
 template<typename T>
-rb::Node<T>* rb::RedBlackTree<T>::rotateLeft(rb::Node<T>* node) {
+void rb::RBTree<T>::removeFixup(rb::Node<T>* node) {
+    while (node != this->root && node->color == rb::BLACK) {
+        if (node == node->parent->left) {
+            node = this->removeFixupForRightBrother(node);
+        } else {
+            node = this->removeFixupForLeftBrother(node);
+        }
+    }
+    node->color = rb::BLACK;
+}
+
+template<typename T>
+rb::Node<T>* rb::RBTree<T>::removeFixupForRightBrother(rb::Node<T>* node) {
+    rb::Node<T>* rightBrother = node->parent->right;
+    if (rightBrother != nullptr && rightBrother->color == rb::RED) {
+        rightBrother->color = rb::BLACK;
+        node->parent->color = rb::RED;
+        this->rotateLeft(node->parent);
+        rightBrother = node->parent->right;
+    }
+    if ((rightBrother->left == nullptr || rightBrother->left->color == rb::BLACK) &&
+        (rightBrother->right == nullptr || rightBrother->right->color == rb::BLACK)) {
+        rightBrother->color = rb::RED;
+        node = node->parent;
+    } else {
+        if (rightBrother->right == nullptr || rightBrother->right->color == rb::BLACK) {
+            if (rightBrother->left != nullptr) {
+                rightBrother->left->color = rb::BLACK;
+            }
+            rightBrother->color = rb::RED;
+            this->rotateRight(rightBrother);
+            rightBrother = node->parent->right;
+        }
+        rightBrother->color = node->parent->color;
+        node->parent->color = rb::BLACK;
+        if (rightBrother->right != nullptr) {
+            rightBrother->right->color = rb::BLACK;
+        }
+        this->rotateLeft(node->parent);
+        node = this->root;
+    }
+    return node;
+}
+
+template<typename T>
+rb::Node<T>* rb::RBTree<T>::removeFixupForLeftBrother(rb::Node<T>* node) {
+    rb::Node<T>* leftBrother = node->parent->left;
+    if (leftBrother != nullptr && leftBrother->color == rb::RED) {
+        leftBrother->color = rb::BLACK;
+        node->parent->color = rb::RED;
+        this->rotateRight(node->parent);
+        leftBrother = node->parent->left;
+    }
+    if ((leftBrother->right == nullptr || leftBrother->right->color == rb::BLACK) &&
+        (leftBrother->left == nullptr || leftBrother->left->color == rb::BLACK)) {
+        leftBrother->color = rb::RED;
+        node = node->parent;
+    } else {
+        if (leftBrother->left == nullptr || leftBrother->left->color == rb::BLACK) {
+            if (leftBrother->right != nullptr) {
+                leftBrother->right->color = rb::BLACK;
+            }
+            leftBrother->color = rb::RED;
+            this->rotateLeft(leftBrother);
+            leftBrother = node->parent->left;
+        }
+        leftBrother->color = node->parent->color;
+        node->parent->color = rb::BLACK;
+        if (leftBrother->left != nullptr) {
+            leftBrother->left->color = rb::BLACK;
+        }
+        this->rotateRight(node->parent);
+        node = this->root;
+    }
+    return node;
+}
+
+template<typename T>
+void rb::RBTree<T>::rotateLeft(rb::Node<T>* node) {
     rb::Node<T>* rightChildren = node->right;
-    rb::Node<T>* rightChildrenLeft = rightChildren->left;
     node->right = rightChildren->left;
+    if (rightChildren->left != nullptr)
+        rightChildren->left->parent = node;
     rightChildren->left = node;
-    this->updateHeight(node);
-    this->updateHeight(rightChildren);
     this->transplant(node, rightChildren);
     node->parent = rightChildren;
-    if (rightChildrenLeft != nullptr)
-        rightChildrenLeft->parent = node;
-    return rightChildren;
 }
 
 template<typename T>
-rb::Node<T>* rb::RedBlackTree<T>::rotateRight(rb::Node<T>* node) {
+void rb::RBTree<T>::rotateRight(rb::Node<T>* node) {
     rb::Node<T>* leftChildren = node->left;
-    rb::Node<T>* leftChildrenRight = leftChildren->right;
     node->left = leftChildren->right;
+    if (leftChildren->right != nullptr)
+        leftChildren->right->parent = node;
     leftChildren->right = node;
-    this->updateHeight(node);
-    this->updateHeight(leftChildren);
     this->transplant(node, leftChildren);
     node->parent = leftChildren;
-    if (leftChildrenRight != nullptr)
-        leftChildrenRight->parent = node;
-    return leftChildren;
 }
 
 #endif

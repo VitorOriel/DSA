@@ -1,16 +1,16 @@
 #include <iostream>
-#include "avl.hpp"
+#include "rbtree.hpp"
 
 using namespace std;
 
-void printTree(rb::AVLTree<int>& tree) {
+void printTree(rb::RBTree<int>& tree) {
     for (rb::InorderIterator<int> it = tree.begin(); it.hasNext();)
         cout << it.next() << ' ';
     cout << endl;
 }
 
 int main() {
-    rb::AVLTree<int> tree;
+    rb::RBTree<int> tree;
     tree.insert(3);
     tree.insert(1);
     tree.insert(2);

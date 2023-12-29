@@ -11,7 +11,7 @@
 template<typename T>
 class rb::Node {
     template<typename U>
-    friend class rb::RedBlackTree;
+    friend class rb::RBTree;
     template<typename V>
     friend class rb::InorderIterator;
 
@@ -32,7 +32,7 @@ rb::Node<T>::Node(const T& data) {
     this->right = nullptr;
     this->parent = nullptr;
     this->data = data;
-    this->color = rb::BLACK;
+    this->color = rb::RED;
 }
 
 template<typename T>
