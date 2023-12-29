@@ -19,8 +19,8 @@ class avl::AVLTree {
         void insert(const T& data);
         T search(const T& data);
         void remove(const T& data);
-        T& min();
-        T& max();
+        T min();
+        T max();
         avl::InorderIterator<T> begin() { return avl::InorderIterator<T>(this->root); }
     private:
         void destroyRecursive(avl::Node<T>* node);
@@ -82,7 +82,7 @@ void avl::AVLTree<T>::remove(const T& data) {
 }
 
 template<typename T>
-T& avl::AVLTree<T>::min() {
+T avl::AVLTree<T>::min() {
     if (this->root == nullptr)
         throw EmptyTreeException("Can't get min from an empty tree");
     else {
@@ -92,7 +92,7 @@ T& avl::AVLTree<T>::min() {
 }
 
 template<typename T>
-T& avl::AVLTree<T>::max() {
+T avl::AVLTree<T>::max() {
     if (this->root == nullptr)
         throw EmptyTreeException("Can't get max from an empty tree");
     else {

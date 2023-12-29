@@ -14,7 +14,7 @@ template<typename T>
 class rb::InorderIterator {
     public:
         InorderIterator(rb::Node<T>* node);
-        T& next();
+        T next();
         inline bool hasNext() noexcept { return !this->stackIterator.empty(); }
     private:
         void pushLeftChildrens(rb::Node<T>* node);
@@ -29,7 +29,7 @@ rb::InorderIterator<T>::InorderIterator(rb::Node<T>* node) {
 }
 
 template<typename T>
-T& rb::InorderIterator<T>::next() {
+T rb::InorderIterator<T>::next() {
     rb::Node<T>* currentNode = this->stackIterator.top();
     this->stackIterator.pop();
     if (currentNode->right != nullptr)

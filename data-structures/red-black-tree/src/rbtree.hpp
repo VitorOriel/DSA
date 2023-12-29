@@ -19,8 +19,8 @@ class rb::RBTree {
         void insert(const T& data);
         T search(const T& data);
         void remove(const T& data);
-        T& min();
-        T& max();
+        T min();
+        T max();
         rb::InorderIterator<T> begin() { return rb::InorderIterator<T>(this->root); }
     private:
         void destroyRecursive(rb::Node<T>* node);
@@ -88,7 +88,7 @@ void rb::RBTree<T>::remove(const T& data) {
 }
 
 template<typename T>
-T& rb::RBTree<T>::min() {
+T rb::RBTree<T>::min() {
     if (this->root == nullptr)
         throw EmptyTreeException("Can't get min from an empty tree");
     else {
@@ -98,7 +98,7 @@ T& rb::RBTree<T>::min() {
 }
 
 template<typename T>
-T& rb::RBTree<T>::max() {
+T rb::RBTree<T>::max() {
     if (this->root == nullptr)
         throw EmptyTreeException("Can't get max from an empty tree");
     else {

@@ -14,7 +14,7 @@ template<typename T>
 class avl::InorderIterator {
     public:
         InorderIterator(avl::Node<T>* node);
-        T& next();
+        T next();
         inline bool hasNext() noexcept { return !this->stackIterator.empty(); }
     private:
         void pushLeftChildrens(avl::Node<T>* node);
@@ -29,7 +29,7 @@ avl::InorderIterator<T>::InorderIterator(avl::Node<T>* node) {
 }
 
 template<typename T>
-T& avl::InorderIterator<T>::next() {
+T avl::InorderIterator<T>::next() {
     avl::Node<T>* currentNode = this->stackIterator.top();
     this->stackIterator.pop();
     if (currentNode->right != nullptr)
