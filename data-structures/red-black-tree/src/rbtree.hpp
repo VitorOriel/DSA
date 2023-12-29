@@ -83,7 +83,7 @@ void rb::RBTree<T>::remove(const T& data) {
         }
         delete removedNode;
         if (fixColor == rb::BLACK && fixWhere != nullptr)
-            removeFixup(fixWhere);
+            this->removeFixup(fixWhere);
     }
 }
 
