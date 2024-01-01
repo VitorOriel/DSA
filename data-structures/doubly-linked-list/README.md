@@ -13,5 +13,6 @@ A doubly linked list is a data structure in which each node contains a data elem
 | insert | O(1) |
 | delete | O(n) |
 
+
 ## References
 1. https://lisha.ufsc.br/teaching/sce/ine6511-2003-2/work/gp/lists.html
